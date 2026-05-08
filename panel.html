@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel · Pórtico del Foro</title>
+<link rel="icon" type="image/png" href="/assets/logos/avatar_redes_400.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--c-navy:#1A2E4A;--c-coral:#E63946;--c-bg:#FAFAFA;--c-text:#1A2E4A;--c-text-2:#5A6B82;--c-text-3:#8A99B0;--c-border:#E5E8ED;--c-hover:#F0F2F5;--c-success:#2D8A5F;--c-error:#C0392B;--c-warning:#D89614;--f-display:'Fraunces',Georgia,serif;--f-body:'Inter',-apple-system,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);color:var(--c-text);background:var(--c-bg);line-height:1.5;font-size:14px;-webkit-font-smoothing:antialiased}
+header{background:var(--c-navy);color:white;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100}
+.h-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;text-decoration:none;color:inherit}
+.brand-logo{height:34px;width:auto;display:block}
+.h-right{display:flex;align-items:center;gap:20px;font-size:13px}
+.h-user{color:#c5d2e0}
+.h-user strong{color:white;font-weight:500}
+.h-link{color:#c5d2e0;text-decoration:none;transition:color 0.15s}
+.h-link:hover{color:white}
+.btn{background:var(--c-coral);color:white;border:none;padding:9px 16px;border-radius:6px;font-family:var(--f-body);font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s;text-decoration:none;display:inline-block}
+.btn:hover{background:#d12d3a}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-secondary{background:transparent;color:var(--c-navy);border:1px solid var(--c-border)}
+.btn-secondary:hover{border-color:var(--c-navy);background:var(--c-hover)}
+.btn-success{background:var(--c-success)}
+.btn-success:hover{background:#256e4c}
+.btn-danger{background:var(--c-error)}
+.btn-danger:hover{background:#a02a1f}
+.btn-ghost{background:transparent;color:white;border:1px solid rgba(255,255,255,0.2);padding:7px 14px;font-size:12px}
+.btn-ghost:hover{background:rgba(255,255,255,0.05)}
+.container{max-width:1200px;margin:0 auto;padding:32px 24px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat{background:white;border:1px solid var(--c-border);border-radius:10px;padding:20px}
+.stat-num{font-family:var(--f-display);font-size:32px;font-weight:600;color:var(--c-navy);line-height:1}
+.stat-label{font-size:11px;color:var(--c-text-2);text-transform:uppercase;letter-spacing:0.1em;margin-top:8px}
+.stat.alert{border-color:var(--c-coral);background:rgba(230,57,70,0.04)}
+.stat.alert .stat-num{color:var(--c-coral)}
+.tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid var(--c-border)}
+.tab{padding:12px 20px;font-size:14px;font-weight:500;color:var(--c-text-2);cursor:pointer;border:none;background:none;font-family:var(--f-body);border-bottom:2px solid transparent;transition:all 0.15s;display:flex;align-items:center;gap:8px}
+.tab:hover{color:var(--c-navy)}
+.tab.active{color:var(--c-navy);border-bottom-color:var(--c-coral)}
+.tab-badge{background:var(--c-coral);color:white;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;line-height:1.4}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.section-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px}
+.section-h h2{font-family:var(--f-display);font-size:22px;font-weight:500;color:var(--c-navy);letter-spacing:-0.01em}
+.section-h .meta{font-size:13px;color:var(--c-text-2)}
+.search-bar{margin-bottom:20px}
+.search-bar input{width:100%;border:1px solid var(--c-border);border-radius:6px;padding:10px 14px;font-family:var(--f-body);font-size:14px;color:var(--c-text);background:white;transition:border-color 0.15s}
+.search-bar input:focus{outline:none;border-color:var(--c-coral)}
+.event-card{background:white;border:1px solid var(--c-border);border-radius:10px;padding:20px;margin-bottom:12px;transition:border-color 0.15s}
+.event-card:hover{border-color:var(--c-navy)}
+.ev-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:10px}
+.ev-title{font-family:var(--f-display);font-size:18px;font-weight:500;color:var(--c-navy);line-height:1.3;flex:1}
+.ev-source{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;padding:3px 8px;border-radius:4px;background:var(--c-hover);color:var(--c-text-2);white-space:nowrap}
+.ev-source.scraping{background:rgba(216,150,20,0.1);color:var(--c-warning)}
+.ev-source.user_proposal{background:rgba(45,138,95,0.1);color:var(--c-success)}
+.ev-source.admin{background:rgba(26,46,74,0.08);color:var(--c-navy)}
+.ev-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--c-text-2);margin-bottom:12px}
+.ev-meta-i{display:flex;align-items:center;gap:5px}
+.ev-meta-i strong{color:var(--c-text);font-weight:500}
+.ev-desc{font-size:13px;color:var(--c-text-2);line-height:1.5;margin-bottom:14px;text-align:justify;hyphens:none;-webkit-hyphens:none}
+.ev-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--c-border)}
+.ev-link{font-size:12px;color:var(--c-coral);text-decoration:none;border-bottom:1px solid currentColor;align-self:center;margin-right:auto;word-break:break-all}
+.empty-state{text-align:center;padding:60px 24px;color:var(--c-text-2);background:white;border:1px solid var(--c-border);border-radius:10px}
+.empty-state h3{font-family:var(--f-display);font-size:20px;font-weight:500;color:var(--c-navy);margin-bottom:8px}
+.loading{text-align:center;padding:60px 24px;color:var(--c-text-2)}
+.error{background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);border-radius:10px;padding:20px;color:var(--c-error);font-size:13px;margin-bottom:16px}
+.success{background:rgba(45,138,95,0.06);border:1px solid rgba(45,138,95,0.2);border-radius:10px;padding:14px 18px;color:var(--c-success);font-size:13px;margin-bottom:16px}
+.form-grid{background:white;border:1px solid var(--c-border);border-radius:10px;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-grid .full{grid-column:1 / -1}
+.fg label{display:block;font-size:13px;font-weight:500;color:var(--c-navy);margin-bottom:6px}
+.fg label .req{color:var(--c-coral)}
+.fg input,.fg textarea,.fg select{width:100%;border:1px solid var(--c-border);border-radius:6px;padding:10px 12px;font-family:var(--f-body);font-size:14px;color:var(--c-text);background:white;transition:border-color 0.15s}
+.fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:var(--c-coral)}
+.fg textarea{min-height:90px;resize:vertical;font-family:var(--f-body)}
+.fg-help{font-size:12px;color:var(--c-text-2);margin-top:4px}
+.areas-multi{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid var(--c-border);border-radius:6px;background:white;min-height:42px;max-height:140px;overflow-y:auto}
+.area-chip{font-size:12px;padding:4px 10px;border:1px solid var(--c-border);border-radius:14px;background:var(--c-bg);color:var(--c-text-2);cursor:pointer;transition:all 0.15s;user-select:none}
+.area-chip:hover{border-color:var(--c-navy)}
+.area-chip.selected{background:var(--c-coral);color:white;border-color:var(--c-coral)}
+.form-actions{grid-column:1 / -1;display:flex;justify-content:flex-end;gap:10px;padding-top:16px;margin-top:8px;border-top:1px solid var(--c-border)}
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto}
+.modal-bg.active{display:flex}
+.modal{background:white;border-radius:14px;max-width:760px;width:100%;padding:0;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.modal-h{padding:24px 32px;border-bottom:1px solid var(--c-border);display:flex;justify-content:space-between;align-items:center}
+.modal-h h3{font-family:var(--f-display);font-size:20px;font-weight:500;color:var(--c-navy)}
+.modal-close{background:none;border:none;font-size:24px;color:var(--c-text-2);cursor:pointer;padding:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.modal-close:hover{background:var(--c-hover)}
+.modal-body{padding:24px 32px}
+@media (max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr;padding:20px}.h-user{display:none}}
+@media (max-width:500px){.stats{grid-template-columns:1fr}.tabs{overflow-x:auto;flex-wrap:nowrap}.tab{white-space:nowrap}}
+</style>
+</head>
+<body>
+
+<header><div class="h-inner">
+  <a class="brand" href="/">
+    <img class="brand-logo" src="/assets/logos/logo_horizontal_blanco_640.png" alt="Pórtico del Foro">
+  </a>
+  <div class="h-right">
+    <span class="h-user" id="user-name">…</span>
+    <a class="h-link" href="/" target="_blank">Ver sitio →</a>
+    <button class="btn btn-ghost" id="logout-btn">Cerrar sesión</button>
+  </div>
+</div></header>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat alert" id="stat-pending-card"><div class="stat-num" id="stat-pending">—</div><div class="stat-label">Pendientes</div></div>
+    <div class="stat"><div class="stat-num" id="stat-approved">—</div><div class="stat-label">Aprobados</div></div>
+    <div class="stat"><div class="stat-num" id="stat-broken">—</div><div class="stat-label">Links rotos</div></div>
+    <div class="stat"><div class="stat-num" id="stat-proposals">—</div><div class="stat-label">Propuestas usuarios</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="pending">Pendientes <span class="tab-badge" id="badge-pending" style="display:none">0</span></button>
+    <button class="tab" data-tab="new">Cargar evento</button>
+    <button class="tab" data-tab="approved">Aprobados</button>
+    <button class="tab" data-tab="proposals">Propuestas <span class="tab-badge" id="badge-proposals" style="display:none">0</span></button>
+  </div>
+
+  <div class="tab-content active" id="tab-pending">
+    <div class="section-h"><h2>Eventos pendientes de revisión</h2><div class="meta" id="pending-meta"></div></div>
+    <div id="pending-list"><div class="loading">Cargando…</div></div>
+  </div>
+
+  <div class="tab-content" id="tab-new">
+    <div class="section-h"><h2>Cargar nuevo evento</h2><div class="meta">Se publica directo como aprobado</div></div>
+    <div id="new-result"></div>
+    <form id="new-form" class="form-grid">
+      <div class="fg full"><label>Título <span class="req">*</span></label><input type="text" id="f-title" required placeholder="Ej: Especialización en Derecho Procesal Civil"></div>
+      <div class="fg"><label>Institución <span class="req">*</span></label><select id="f-institution" required><option value="">Cargando…</option></select></div>
+      <div class="fg"><label>Tipo de evento <span class="req">*</span></label><select id="f-type" required><option value="">Cargando…</option></select></div>
+      <div class="fg"><label>Modalidad <span class="req">*</span></label><select id="f-modality" required><option value="presencial">Presencial</option><option value="virtual">Virtual</option><option value="hibrida">Híbrida</option></select></div>
+      <div class="fg"><label>Costo <span class="req">*</span></label><select id="f-cost" required><option value="gratuito">Gratuito</option><option value="arancelado">Arancelado</option><option value="becado">Becado</option></select></div>
+      <div class="fg"><label>Fecha de inicio</label><input type="date" id="f-date"></div>
+      <div class="fg"><label>Provincia</label><select id="f-province"><option value="">— Sin especificar —</option></select></div>
+      <div class="fg full"><label>Áreas del derecho <span class="req">*</span></label><div class="areas-multi" id="f-areas"></div><div class="fg-help">Click para seleccionar/deseleccionar (mínimo 1)</div></div>
+      <div class="fg"><label>Duración (texto)</label><input type="text" id="f-duration" placeholder="Ej: 4 meses · 240 horas"></div>
+      <div class="fg"><label>Docente / Expositor</label><input type="text" id="f-instructor" placeholder="Ej: Dr. Juan Pérez"></div>
+      <div class="fg"><label>Ciudad</label><input type="text" id="f-city" placeholder="Ej: CABA"></div>
+      <div class="fg"><label>Dirección (si presencial)</label><input type="text" id="f-address" placeholder="Ej: Av. Figueroa Alcorta 2263"></div>
+      <div class="fg full"><label>URL externa <span class="req">*</span></label><input type="url" id="f-url" required placeholder="https://..."><div class="fg-help">Link al sitio del organizador donde se inscribe el usuario</div></div>
+      <div class="fg full"><label>Descripción</label><textarea id="f-desc" placeholder="Breve descripción del evento (opcional)"></textarea></div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="form-clear">Limpiar</button>
+        <button type="submit" class="btn btn-success" id="form-submit">Publicar evento</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="tab-content" id="tab-approved">
+    <div class="section-h"><h2>Eventos aprobados</h2><div class="meta" id="approved-meta"></div></div>
+    <div class="search-bar"><input type="text" id="approved-search" placeholder="Buscar por título o institución…"></div>
+    <div id="approved-list"><div class="loading">Cargando…</div></div>
+  </div>
+
+  <div class="tab-content" id="tab-proposals">
+    <div class="section-h"><h2>Propuestas de usuarios</h2><div class="meta" id="proposals-meta"></div></div>
+    <div id="proposals-list"><div class="loading">Cargando…</div></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-h"><h3 id="modal-title">Editar evento</h3><button class="modal-close" id="modal-close">×</button></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SB_URL = 'https://brbbccvsrcfnsbbfkirm.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyYmJjY3ZzcmNmbnNiYmZraXJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNDY1NjIsImV4cCI6MjA5MzcyMjU2Mn0.zGdseaJ5y9DcypdHKmIqWKOPoFfbdWky_Tc1OQpClEg';
+const sb = createClient(SB_URL, SB_KEY);
+
+const { data: { session } } = await sb.auth.getSession();
+if (!session) { window.location.href = '/admin.html'; }
+
+const { data: adminData } = await sb.from('admin_users').select('full_name').eq('auth_user_id', session.user.id).eq('active', true).single();
+if (!adminData) { await sb.auth.signOut(); window.location.href = '/admin.html'; }
+document.getElementById('user-name').innerHTML = '<strong>' + (adminData.full_name || session.user.email) + '</strong>';
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  window.location.href = '/admin.html';
+});
+
+let CATS = { institutions: [], types: [], areas: [], provinces: [] };
+async function loadCatalogs() {
+  const [inst, types, areas, provs] = await Promise.all([
+    sb.from('institutions').select('id, name, type').eq('active', true).order('name'),
+    sb.from('event_types').select('id, name, slug').order('name'),
+    sb.from('areas').select('id, name, slug').order('name'),
+    sb.from('provinces').select('id, name').order('name')
+  ]);
+  CATS.institutions = inst.data || [];
+  CATS.types = types.data || [];
+  CATS.areas = areas.data || [];
+  CATS.provinces = provs.data || [];
+  
+  document.getElementById('f-institution').innerHTML = '<option value="">— Elegí una —</option>' + CATS.institutions.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+  document.getElementById('f-type').innerHTML = '<option value="">— Elegí uno —</option>' + CATS.types.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  document.getElementById('f-province').innerHTML = '<option value="">— Sin especificar —</option>' + CATS.provinces.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  document.getElementById('f-areas').innerHTML = CATS.areas.map(a => `<div class="area-chip" data-id="${a.id}">${a.name}</div>`).join('');
+  document.querySelectorAll('#f-areas .area-chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('selected'));
+  });
+}
+
+async function loadStats() {
+  const [pending, approved, broken, proposals] = await Promise.all([
+    sb.from('events').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+    sb.from('events').select('id', { count: 'exact', head: true }).eq('status', 'approved'),
+    sb.from('events').select('id', { count: 'exact', head: true }).eq('link_status', 'broken'),
+    sb.from('proposals').select('id', { count: 'exact', head: true }).eq('status', 'pending')
+  ]);
+  document.getElementById('stat-pending').textContent = pending.count || 0;
+  document.getElementById('stat-approved').textContent = approved.count || 0;
+  document.getElementById('stat-broken').textContent = broken.count || 0;
+  document.getElementById('stat-proposals').textContent = proposals.count || 0;
+  
+  const pBadge = document.getElementById('badge-pending');
+  if (pending.count > 0) { pBadge.textContent = pending.count; pBadge.style.display = 'inline-block'; }
+  else pBadge.style.display = 'none';
+  
+  const prBadge = document.getElementById('badge-proposals');
+  if (proposals.count > 0) { prBadge.textContent = proposals.count; prBadge.style.display = 'inline-block'; }
+  else prBadge.style.display = 'none';
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'approved') loadApproved();
+    if (tab.dataset.tab === 'proposals') loadProposals();
+    if (tab.dataset.tab === 'pending') loadPending();
+  });
+});
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const m = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const x = new Date(d + 'T00:00:00');
+  return `${x.getDate()} ${m[x.getMonth()]} ${x.getFullYear()}`;
+}
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+function eventCardHTML(e, showActions = true) {
+  const inst = CATS.institutions.find(i => i.id === e.institution_id);
+  const type = CATS.types.find(t => t.id === e.event_type_id);
+  const sourceLabel = { scraping: 'Scraper', user_proposal: 'Usuario', admin: 'Admin', institution_proposal: 'Institución' }[e.source] || e.source;
+  return `
+    <div class="event-card" data-id="${e.id}">
+      <div class="ev-h">
+        <div class="ev-title">${e.title}</div>
+        <span class="ev-source ${e.source}">${sourceLabel}</span>
+      </div>
+      <div class="ev-meta">
+        <div class="ev-meta-i"><strong>${inst ? inst.name : '?'}</strong></div>
+        ${type ? `<div class="ev-meta-i">${type.name}</div>` : ''}
+        ${e.start_date ? `<div class="ev-meta-i">📅 ${fmtDate(e.start_date)}</div>` : ''}
+        <div class="ev-meta-i">${cap(e.modality)}</div>
+        <div class="ev-meta-i">${cap(e.cost_type)}</div>
+      </div>
+      ${e.description ? `<div class="ev-desc">${e.description}</div>` : ''}
+      ${showActions ? `<div class="ev-actions">
+        ${e.external_url ? `<a class="ev-link" href="${e.external_url}" target="_blank">${e.external_url}</a>` : ''}
+        ${e.status === 'pending' ? `
+          <button class="btn btn-success btn-sm" data-action="approve" data-id="${e.id}">Aprobar</button>
+          <button class="btn btn-secondary btn-sm" data-action="edit" data-id="${e.id}">Editar</button>
+          <button class="btn btn-danger btn-sm" data-action="reject" data-id="${e.id}">Rechazar</button>
+        ` : `
+          <button class="btn btn-secondary btn-sm" data-action="edit" data-id="${e.id}">Editar</button>
+          <button class="btn btn-danger btn-sm" data-action="archive" data-id="${e.id}">Archivar</button>
+        `}
+      </div>` : ''}
+    </div>
+  `;
+}
+
+async function loadPending() {
+  const cont = document.getElementById('pending-list');
+  cont.innerHTML = '<div class="loading">Cargando…</div>';
+  const { data, error } = await sb.from('events').select('*').eq('status', 'pending').order('created_at', { ascending: false });
+  if (error) { cont.innerHTML = `<div class="error">${error.message}</div>`; return; }
+  document.getElementById('pending-meta').textContent = `${data.length} ${data.length === 1 ? 'evento' : 'eventos'}`;
+  if (data.length === 0) {
+    cont.innerHTML = '<div class="empty-state"><h3>No hay eventos pendientes</h3><p>Todo lo que entró ya fue revisado. Buen trabajo.</p></div>';
+    return;
+  }
+  cont.innerHTML = data.map(e => eventCardHTML(e)).join('');
+  attachActionListeners();
+}
+
+let approvedCache = [];
+async function loadApproved() {
+  const cont = document.getElementById('approved-list');
+  cont.innerHTML = '<div class="loading">Cargando…</div>';
+  const { data, error } = await sb.from('events').select('*').eq('status', 'approved').order('start_date', { ascending: true, nullsFirst: false });
+  if (error) { cont.innerHTML = `<div class="error">${error.message}</div>`; return; }
+  approvedCache = data || [];
+  document.getElementById('approved-meta').textContent = `${approvedCache.length} ${approvedCache.length === 1 ? 'evento' : 'eventos'} publicados`;
+  renderApproved(approvedCache);
+}
+function renderApproved(list) {
+  const cont = document.getElementById('approved-list');
+  if (list.length === 0) { cont.innerHTML = '<div class="empty-state"><h3>Sin resultados</h3></div>'; return; }
+  cont.innerHTML = list.map(e => eventCardHTML(e)).join('');
+  attachActionListeners();
+}
+document.getElementById('approved-search').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase();
+  if (!q) { renderApproved(approvedCache); return; }
+  const filtered = approvedCache.filter(ev => {
+    const inst = CATS.institutions.find(i => i.id === ev.institution_id);
+    return ev.title.toLowerCase().includes(q) || (inst && inst.name.toLowerCase().includes(q));
+  });
+  renderApproved(filtered);
+});
+
+async function loadProposals() {
+  const cont = document.getElementById('proposals-list');
+  cont.innerHTML = '<div class="loading">Cargando…</div>';
+  const { data, error } = await sb.from('proposals').select('*').eq('status', 'pending').order('created_at', { ascending: false });
+  if (error) { cont.innerHTML = `<div class="error">${error.message}</div>`; return; }
+  document.getElementById('proposals-meta').textContent = `${data.length} ${data.length === 1 ? 'propuesta' : 'propuestas'}`;
+  if (data.length === 0) {
+    cont.innerHTML = '<div class="empty-state"><h3>No hay propuestas de usuarios</h3><p>Cuando alguien proponga un evento, aparece acá.</p></div>';
+    return;
+  }
+  cont.innerHTML = data.map(p => `
+    <div class="event-card">
+      <div class="ev-h"><div class="ev-title">${p.event_title}</div><span class="ev-source user_proposal">Propuesta</span></div>
+      <div class="ev-meta">
+        <div class="ev-meta-i">De <strong>${p.proposer_name || p.proposer_email}</strong></div>
+        ${p.institution_name ? `<div class="ev-meta-i">${p.institution_name}</div>` : ''}
+        ${p.event_date_text ? `<div class="ev-meta-i">📅 ${p.event_date_text}</div>` : ''}
+      </div>
+      ${p.event_description ? `<div class="ev-desc">${p.event_description}</div>` : ''}
+      ${p.additional_info ? `<div class="ev-desc"><em>Adicional: ${p.additional_info}</em></div>` : ''}
+      <div class="ev-actions">
+        ${p.event_url ? `<a class="ev-link" href="${p.event_url}" target="_blank">${p.event_url}</a>` : ''}
+        <button class="btn btn-danger btn-sm" data-action="reject-proposal" data-id="${p.id}">Rechazar</button>
+        <a class="btn btn-success btn-sm" href="#new" data-action="convert-proposal" data-id="${p.id}">Convertir a evento</a>
+      </div>
+    </div>
+  `).join('');
+  attachActionListeners();
+}
+
+function attachActionListeners() {
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    btn.onclick = async (e) => {
+      e.preventDefault();
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if (action === 'approve') await approveEvent(id);
+      else if (action === 'reject') await rejectEvent(id);
+      else if (action === 'archive') await archiveEvent(id);
+      else if (action === 'edit') openEditModal(id);
+      else if (action === 'reject-proposal') await rejectProposal(id);
+    };
+  });
+}
+
+async function approveEvent(id) {
+  if (!confirm('¿Aprobar y publicar este evento?')) return;
+  const { error } = await sb.from('events').update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  await loadStats();
+  loadPending();
+}
+
+async function rejectEvent(id) {
+  const reason = prompt('Motivo del rechazo (opcional):');
+  if (reason === null) return;
+  const { error } = await sb.from('events').update({ status: 'rejected', rejection_reason: reason || null, reviewed_at: new Date().toISOString() }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  await loadStats();
+  loadPending();
+}
+
+async function archiveEvent(id) {
+  if (!confirm('¿Archivar este evento? Se retira del sitio público.')) return;
+  const { error } = await sb.from('events').update({ status: 'archived' }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  await loadStats();
+  loadApproved();
+}
+
+async function rejectProposal(id) {
+  if (!confirm('¿Rechazar esta propuesta?')) return;
+  const { error } = await sb.from('proposals').update({ status: 'rejected', reviewed_at: new Date().toISOString() }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  await loadStats();
+  loadProposals();
+}
+
+function slugify(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 80);
+}
+
+async function openEditModal(id) {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modal-body');
+  document.getElementById('modal-title').textContent = 'Editar evento';
+  body.innerHTML = '<div class="loading">Cargando…</div>';
+  modal.classList.add('active');
+  
+  const { data: ev, error } = await sb.from('events').select('*').eq('id', id).single();
+  if (error || !ev) { body.innerHTML = `<div class="error">No se pudo cargar el evento.</div>`; return; }
+  
+  const { data: evAreas } = await sb.from('event_areas').select('area_id').eq('event_id', id);
+  const selectedAreaIds = new Set((evAreas || []).map(x => x.area_id));
+  
+  body.innerHTML = `
+    <form class="form-grid" id="edit-form" style="border:none;padding:0">
+      <div class="fg full"><label>Título <span class="req">*</span></label><input type="text" id="e-title" required value="${ev.title.replace(/"/g, '&quot;')}"></div>
+      <div class="fg"><label>Institución</label><select id="e-institution">${CATS.institutions.map(i => `<option value="${i.id}" ${i.id === ev.institution_id ? 'selected' : ''}>${i.name}</option>`).join('')}</select></div>
+      <div class="fg"><label>Tipo</label><select id="e-type">${CATS.types.map(t => `<option value="${t.id}" ${t.id === ev.event_type_id ? 'selected' : ''}>${t.name}</option>`).join('')}</select></div>
+      <div class="fg"><label>Modalidad</label><select id="e-modality"><option value="presencial" ${ev.modality === 'presencial' ? 'selected' : ''}>Presencial</option><option value="virtual" ${ev.modality === 'virtual' ? 'selected' : ''}>Virtual</option><option value="hibrida" ${ev.modality === 'hibrida' ? 'selected' : ''}>Híbrida</option></select></div>
+      <div class="fg"><label>Costo</label><select id="e-cost"><option value="gratuito" ${ev.cost_type === 'gratuito' ? 'selected' : ''}>Gratuito</option><option value="arancelado" ${ev.cost_type === 'arancelado' ? 'selected' : ''}>Arancelado</option><option value="becado" ${ev.cost_type === 'becado' ? 'selected' : ''}>Becado</option></select></div>
+      <div class="fg"><label>Fecha de inicio</label><input type="date" id="e-date" value="${ev.start_date || ''}"></div>
+      <div class="fg"><label>Provincia</label><select id="e-province"><option value="">—</option>${CATS.provinces.map(p => `<option value="${p.id}" ${p.id === ev.province_id ? 'selected' : ''}>${p.name}</option>`).join('')}</select></div>
+      <div class="fg full"><label>Áreas <span class="req">*</span></label><div class="areas-multi" id="e-areas">${CATS.areas.map(a => `<div class="area-chip ${selectedAreaIds.has(a.id) ? 'selected' : ''}" data-id="${a.id}">${a.name}</div>`).join('')}</div></div>
+      <div class="fg"><label>Duración</label><input type="text" id="e-duration" value="${ev.duration_text || ''}"></div>
+      <div class="fg"><label>Docente</label><input type="text" id="e-instructor" value="${(ev.instructor || '').replace(/"/g, '&quot;')}"></div>
+      <div class="fg"><label>Ciudad</label><input type="text" id="e-city" value="${(ev.city || '').replace(/"/g, '&quot;')}"></div>
+      <div class="fg"><label>Dirección</label><input type="text" id="e-address" value="${(ev.location_address || '').replace(/"/g, '&quot;')}"></div>
+      <div class="fg full"><label>URL externa <span class="req">*</span></label><input type="url" id="e-url" required value="${ev.external_url || ''}"></div>
+      <div class="fg full"><label>Descripción</label><textarea id="e-desc">${ev.description || ''}</textarea></div>
+      <div id="edit-result"></div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="edit-cancel">Cancelar</button>
+        <button type="submit" class="btn btn-success">Guardar cambios</button>
+      </div>
+    </form>
+  `;
+  
+  body.querySelectorAll('#e-areas .area-chip').forEach(chip => chip.addEventListener('click', () => chip.classList.toggle('selected')));
+  document.getElementById('edit-cancel').onclick = () => modal.classList.remove('active');
+  
+  document.getElementById('edit-form').onsubmit = async (e) => {
+    e.preventDefault();
+    const selectedAreas = [...body.querySelectorAll('#e-areas .area-chip.selected')].map(c => parseInt(c.dataset.id));
+    if (selectedAreas.length === 0) { document.getElementById('edit-result').innerHTML = '<div class="error">Tiene que tener al menos un área.</div>'; return; }
+    
+    const updates = {
+      title: document.getElementById('e-title').value.trim(),
+      institution_id: document.getElementById('e-institution').value,
+      event_type_id: parseInt(document.getElementById('e-type').value),
+      modality: document.getElementById('e-modality').value,
+      cost_type: document.getElementById('e-cost').value,
+      start_date: document.getElementById('e-date').value || null,
+      province_id: document.getElementById('e-province').value ? parseInt(document.getElementById('e-province').value) : null,
+      duration_text: document.getElementById('e-duration').value.trim() || null,
+      instructor: document.getElementById('e-instructor').value.trim() || null,
+      city: document.getElementById('e-city').value.trim() || null,
+      location_address: document.getElementById('e-address').value.trim() || null,
+      external_url: document.getElementById('e-url').value.trim(),
+      description: document.getElementById('e-desc').value.trim() || null,
+    };
+    
+    const { error: upErr } = await sb.from('events').update(updates).eq('id', id);
+    if (upErr) { document.getElementById('edit-result').innerHTML = `<div class="error">${upErr.message}</div>`; return; }
+    
+    await sb.from('event_areas').delete().eq('event_id', id);
+    if (selectedAreas.length > 0) {
+      await sb.from('event_areas').insert(selectedAreas.map(aid => ({ event_id: id, area_id: aid })));
+    }
+    
+    modal.classList.remove('active');
+    await loadStats();
+    if (document.querySelector('.tab.active').dataset.tab === 'pending') loadPending();
+    else loadApproved();
+  };
+}
+
+document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.remove('active');
+document.getElementById('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') document.getElementById('modal').classList.remove('active'); });
+
+document.getElementById('form-clear').onclick = () => {
+  document.getElementById('new-form').reset();
+  document.querySelectorAll('#f-areas .area-chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('new-result').innerHTML = '';
+};
+
+document.getElementById('new-form').onsubmit = async (e) => {
+  e.preventDefault();
+  const submitBtn = document.getElementById('form-submit');
+  const result = document.getElementById('new-result');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Publicando…';
+  result.innerHTML = '';
+  
+  const selectedAreas = [...document.querySelectorAll('#f-areas .area-chip.selected')].map(c => parseInt(c.dataset.id));
+  if (selectedAreas.length === 0) {
+    result.innerHTML = '<div class="error">Tenés que seleccionar al menos un área del derecho.</div>';
+    submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento';
+    return;
+  }
+  
+  const title = document.getElementById('f-title').value.trim();
+  const slug = slugify(title) + '-' + Date.now().toString(36);
+  
+  const newEvent = {
+    title: title,
+    slug: slug,
+    institution_id: document.getElementById('f-institution').value,
+    event_type_id: parseInt(document.getElementById('f-type').value),
+    modality: document.getElementById('f-modality').value,
+    cost_type: document.getElementById('f-cost').value,
+    start_date: document.getElementById('f-date').value || null,
+    province_id: document.getElementById('f-province').value ? parseInt(document.getElementById('f-province').value) : null,
+    duration_text: document.getElementById('f-duration').value.trim() || null,
+    instructor: document.getElementById('f-instructor').value.trim() || null,
+    city: document.getElementById('f-city').value.trim() || null,
+    location_address: document.getElementById('f-address').value.trim() || null,
+    external_url: document.getElementById('f-url').value.trim(),
+    description: document.getElementById('f-desc').value.trim() || null,
+    status: 'approved',
+    source: 'admin',
+    reviewed_by: session.user.id,
+    reviewed_at: new Date().toISOString()
+  };
+  
+  const { data: created, error } = await sb.from('events').insert(newEvent).select('id').single();
+  if (error) {
+    result.innerHTML = `<div class="error">${error.message}</div>`;
+    submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento';
+    return;
+  }
+  
+  await sb.from('event_areas').insert(selectedAreas.map(aid => ({ event_id: created.id, area_id: aid })));
+  
+  result.innerHTML = '<div class="success">✅ Evento publicado correctamente. Ya aparece en el sitio público.</div>';
+  document.getElementById('new-form').reset();
+  document.querySelectorAll('#f-areas .area-chip').forEach(c => c.classList.remove('selected'));
+  await loadStats();
+  submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento';
+};
+
+await loadCatalogs();
+await loadStats();
+await loadPending();
+</script>
+
+</body>
+</html>
