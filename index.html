@@ -111,9 +111,6 @@ nav a.active{border-bottom:2px solid var(--c-coral);padding-bottom:4px}
 .area-active-banner-text strong{color:var(--c-coral)}
 .area-active-banner button{background:none;border:1px solid var(--c-coral);color:var(--c-coral);padding:6px 12px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f-body);transition:all 0.15s}
 .area-active-banner button:hover{background:var(--c-coral);color:white}
-.events-disclaimer{display:flex;align-items:flex-start;gap:10px;background:rgba(26,46,74,0.03);border:1px solid var(--c-border);border-radius:var(--r-md);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--c-text-2);line-height:1.5}
-.events-disclaimer svg{width:16px;height:16px;flex-shrink:0;color:var(--c-text-3);margin-top:2px}
-.events-disclaimer strong{color:var(--c-text);font-weight:500}
 .content{max-width:var(--max-c);margin:0 auto;padding:64px 24px}
 .content h2{font-family:var(--f-display);font-size:26px;font-weight:500;color:var(--c-navy);margin:40px 0 16px;letter-spacing:-0.01em}
 .content h2:first-child{margin-top:0}
@@ -140,7 +137,8 @@ nav a.active{border-bottom:2px solid var(--c-coral);padding-bottom:4px}
 .cta-box{background:var(--c-navy);color:white;border-radius:var(--r-md);padding:48px 36px;text-align:center;margin:56px 0 0}
 .cta-box h3{font-family:var(--f-display);font-size:28px;font-weight:500;margin-bottom:12px;color:white}
 .cta-box p{color:#c5d2e0;font-size:15px;max-width:460px;margin:0 auto 28px;line-height:1.6;text-align:center}
-.cta-box .cta{display:inline-block;padding:13px 28px}
+.cta-box .cta{display:inline-block;padding:13px 28px;color:white !important;background:var(--c-coral) !important}
+.cta-box .cta:hover{background:#d12d3a !important}
 .inst-w{max-width:var(--max);margin:0 auto;padding:56px 24px}
 .t-section{margin-bottom:56px}
 .t-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--c-border)}
@@ -229,7 +227,7 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
 <header><div class="h-inner">
 <a class="brand" data-route="home"><img class="brand-logo" src="/assets/logos/logo_horizontal_blanco_640.png" alt="Pórtico del Foro"></a>
 <nav class="desktop-nav"><ul><li><a data-route="home">Eventos</a></li><li><a data-route="instituciones">Instituciones</a></li><li><a data-route="areas">Áreas</a></li><li><a data-route="sobre">Sobre</a></li></ul></nav>
-<a class="cta" data-route="proponer">Proponer evento</a>
+<a class="cta" data-route="home">Proponer evento</a>
 <button class="hamburger" id="hamburger" aria-label="Abrir menú">
   <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
 </button>
@@ -248,7 +246,7 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
     <li><a data-route="areas">Áreas</a></li>
     <li><a data-route="sobre">Sobre</a></li>
   </ul>
-  <a class="cta cta-mobile" data-route="proponer">Proponer evento</a>
+  <a class="cta cta-mobile" data-route="home">Proponer evento</a>
 </aside>
 
 <div class="view" id="v-home">
@@ -261,7 +259,7 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
 <section class="stats"><div class="stats-inner">
 <div><div class="stat-num" id="st-ev">—</div><div class="stat-label">Eventos vigentes</div></div>
 <div><div class="stat-num" id="st-in">—</div><div class="stat-label">Instituciones</div></div>
-<div><div class="stat-num" id="st-ar">—</div><div class="stat-label">Áreas del derecho</div></div>
+<div><div class="stat-num" id="st-fin">—</div><div class="stat-label">Eventos finalizados</div></div>
 <div><div class="stat-num" id="st-pr">—</div><div class="stat-label">Provincias</div></div>
 </div></section>
 <div class="main-c">
@@ -296,10 +294,6 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
   <span class="count-badge" id="filters-count" style="display:none">0</span>
 </button>
 <div id="area-banner-cont"></div>
-<div class="events-disclaimer">
-  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-  <div><strong>Verificá siempre en el sitio del organizador.</strong> Pórtico del Foro reúne información publicada por las instituciones. No organizamos ni somos parte de los eventos listados.</div>
-</div>
 <div class="list-h"><h2 id="list-title">Próximos eventos</h2><div class="sort">Ordenar por <select id="s-sel"><option value="date-asc">Fecha (próximos primero)</option><option value="date-desc">Fecha (más lejanos primero)</option><option value="created-desc">Recientemente cargados</option></select></div></div>
 <div id="ev-cont"><div class="loading">Cargando eventos…</div></div>
 </main>
@@ -308,98 +302,59 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
 
 <div class="view" id="v-instituciones">
 <section class="page-h"><div class="page-h-inner">
+<div class="page-eyebrow">Catálogo</div>
 <h1>Instituciones</h1>
-<p>Universidades, colegios profesionales, institutos y organizaciones jurídicas de todo el país. Hacé click y explorá cada una.</p>
+<p>Universidades, colegios profesionales, organismos públicos, institutos y asociaciones jurídicas de Argentina.</p>
 </div></section>
 <main class="inst-w"><div id="inst-cont"><div class="loading">Cargando instituciones…</div></div></main>
 </div>
 
 <div class="view" id="v-areas">
 <section class="page-h"><div class="page-h-inner">
+<div class="page-eyebrow">Catálogo</div>
 <h1>Áreas del derecho</h1>
-<p>Cada rama del derecho, con sus eventos.</p>
+<p>Encontrá eventos por especialidad: civil, penal, procesal, laboral, comercial, familia y más.</p>
 </div></section>
 <main class="areas-w">
-<p class="areas-intro">Hacé click y explorá los eventos de cada especialidad.</p>
+<p class="areas-intro">Cada área agrupa los eventos relacionados con esa rama del derecho. Click en cualquier área para ver solo los eventos vigentes de esa especialidad.</p>
 <div id="areas-cont"><div class="loading">Cargando áreas…</div></div>
 </main>
 </div>
 
 <div class="view" id="v-sobre">
 <section class="page-h"><div class="page-h-inner">
-<div class="page-eyebrow">Por abogados, para abogados</div>
 <h1>Sobre Pórtico del Foro</h1>
-<p>Una herramienta hecha por abogados, para abogados. Sin marketing inflado.</p>
+<p>Por abogados, para abogados.</p>
 </div></section>
 <main class="content">
-<p class="manifesto">Para no enterarte <em>cuando ya terminó.</em></p>
-<h2>¿Quiénes somos?</h2>
-<p>Pórtico del Foro es un proyecto independiente, hecho por dos abogados argentinos que se cansaron de enterarse de los eventos cuando ya habían terminado. No tiene financiación de ningún colegio ni universidad, no cobra a las instituciones por aparecer y no recibe comisión por las inscripciones.</p>
-<h2>El problema, y la solución</h2>
-<p>En Argentina la oferta de formación jurídica continua es enorme — pero está rota en pedazos. Cada universidad, colegio e instituto tiene su propio sitio, su propio newsletter, su propia cuenta de Instagram. El resultado: te enterás tarde, perdés inscripciones, descubrís que el congreso fue ayer. Pórtico del Foro reúne todo en un solo lugar.</p>
+<p class="manifesto">"Los abogados argentinos se pierden cursos, charlas y posgrados porque la información está dispersa en treinta sitios distintos. <em>Pórtico del Foro es donde todo eso se junta.</em>"</p>
+<h2>El problema</h2>
+<p>En Argentina, la oferta de formación jurídica continua es enorme: universidades públicas y privadas, colegios profesionales en todas las jurisdicciones, institutos especializados, fundaciones, asociaciones, organismos públicos. Cada uno con su propio sitio web, su propio newsletter, su propia cuenta de Instagram.</p>
+<p>El resultado: los abogados se enteran tarde de cursos que les habrían interesado. Pierden inscripciones a posgrados. Descubren que un congreso fue ayer. La información está, pero está rota en pedazos.</p>
+<h2>La solución</h2>
+<p>Pórtico del Foro reúne en un solo lugar toda esa oferta. Un buscador unificado, filtrable por área, modalidad, costo, provincia y tipo de evento. Cada listado lleva al sitio del organizador con un click.</p>
+<p>No reemplazamos a las instituciones. Somos la puerta de entrada al ecosistema completo.</p>
 <h2>Cómo funciona</h2>
 <div class="step"><div class="step-n">1</div><div class="step-c"><h4>Recopilamos</h4><p>Monitoreamos sitios institucionales, redes sociales y comunicaciones públicas de universidades, colegios e institutos jurídicos de todo el país.</p></div></div>
 <div class="step"><div class="step-n">2</div><div class="step-c"><h4>Curamos</h4><p>Cada evento que aparece en Pórtico fue revisado por una persona. No publicamos automáticamente: filtramos relevancia, duplicados y errores antes de que llegue a la web.</p></div></div>
 <div class="step"><div class="step-n">3</div><div class="step-c"><h4>Organizamos</h4><p>Clasificamos por área del derecho, tipo de evento, modalidad, provincia y costo. Para que encontrar lo que importa lleve segundos.</p></div></div>
-<div class="step"><div class="step-n">4</div><div class="step-c"><h4>Linkeamos</h4><p>Cada evento tiene un botón que lleva al sitio del organizador. Si el enlace no está disponible, es posible que el evento haya sido tomado de otra fuente — en ese caso buscalo directamente en la institución.</p></div></div>
-<h2>Pórtico se hace entre todos</h2>
-<p>La información que falta la ponés vos. Si conocés un evento, una institución o una fuente que no está, sumalo. Lo revisamos y lo publicamos.</p>
-<div class="cta-box"><h3>¿Conocés un evento que falta?</h3><p>Sumalo a Pórtico del Foro en menos de un minuto.</p><a class="cta" data-route="proponer">Proponer evento</a></div>
-</main>
+<div class="step"><div class="step-n">4</div><div class="step-c"><h4>Linkeamos</h4><p>Cada evento tiene un botón que lleva al sitio del organizador. Verificamos los enlaces cada 30 minutos: si alguno se rompe, el evento se retira automáticamente.</p></div></div>
+<h2>Cómo escribimos</h2>
+<p>Seis principios definen el tono de la marca:</p>
+<div class="principles">
+<div class="principle"><div class="p-num">01</div><h4>Útil antes que vendedor</h4><p>Cada texto le ahorra tiempo al lector. Sin promesas vacías.</p></div>
+<div class="principle"><div class="p-num">02</div><h4>Profesional sin ser acartonado</h4><p>Lenguaje de colega, no de circular institucional.</p></div>
+<div class="principle"><div class="p-num">03</div><h4>Argentino sin folklore</h4><p>Rioplatense profesional. Sin tilingo, sin regionalismos forzados.</p></div>
+<div class="principle"><div class="p-num">04</div><h4>Editorial sin ser pedante</h4><p>Frases bien construidas, sin jerga académica innecesaria.</p></div>
+<div class="principle"><div class="p-num">05</div><h4>Concreto</h4><p>Datos, fechas, hechos. Cero adjetivos vacíos como "increíble" o "imperdible".</p></div>
+<div class="principle"><div class="p-num">06</div><h4>Honesto</h4><p>Si algo no funciona o falta, lo decimos. No inflamos lo que tenemos.</p></div>
 </div>
-
-<div class="view" id="v-proponer">
-<section class="page-h"><div class="page-h-inner">
-<div class="page-eyebrow">Sumá un evento</div>
-<h1>Proponer un evento</h1>
-<p>Si conocés un curso, jornada, posgrado o cualquier evento jurídico que no esté en Pórtico, contanos. Lo revisamos y si tiene sentido lo publicamos.</p>
-</div></section>
-<main class="content">
-<div class="form-card"><form id="p-form" autocomplete="on">
-
-<div class="fg"><label for="p-nom">Tu nombre <span style="color:var(--c-coral)">*</span></label><input type="text" id="p-nom" name="proposer_name" required maxlength="120" autocomplete="name"></div>
-
-<div class="fg"><label for="p-email">Tu email <span style="color:var(--c-coral)">*</span></label><input type="email" id="p-email" name="proposer_email" required maxlength="200" autocomplete="email"><div class="fg-help">Solo lo usamos para avisarte si publicamos el evento. No queda en ninguna lista de difusión.</div></div>
-
-<div style="height:1px;background:var(--c-border);margin:32px 0;"></div>
-
-<div class="fg"><label for="p-titulo">Título del evento <span style="color:var(--c-coral)">*</span></label><input type="text" id="p-titulo" name="event_title" required minlength="5" maxlength="200" placeholder="Ej: XLVIII Congreso de Derecho Procesal"></div>
-
-<div class="fg"><label for="p-inst">Institución organizadora</label><input type="text" id="p-inst" name="institution_name" maxlength="200" placeholder="Ej: UBA Derecho, UTDT, Colegio de Abogados de Mar del Plata"></div>
-
-<div class="fg"><label for="p-fecha">Fecha</label><input type="text" id="p-fecha" name="event_date_text" maxlength="120" placeholder="Ej: 15 de junio 2026 / todos los jueves desde mayo"><div class="fg-help">Si no la sabés exacta, escribí lo que sepas. Después la verificamos.</div></div>
-
-<div class="fg"><label for="p-url">URL del evento</label><input type="url" id="p-url" name="event_url" maxlength="500" placeholder="https://..."><div class="fg-help">Link a la página oficial donde está la información completa.</div></div>
-
-<div class="fg"><label for="p-desc">Descripción breve</label><textarea id="p-desc" name="event_description" maxlength="500" placeholder="Una línea o dos sobre de qué se trata el evento."></textarea><div class="fg-help">Máximo 500 caracteres. Opcional.</div></div>
-
-<div class="fg"><label for="p-info">Información adicional</label><textarea id="p-info" name="additional_info" maxlength="2000" placeholder="Cualquier cosa que ayude: modalidad (presencial/virtual/híbrida), costo, área del derecho, instructor, dirección, contacto de la institución. No te preocupes por el formato, copiá y pegá lo que tengas."></textarea><div class="fg-help">Cuanto más completa la información, más fácil para nosotros revisar y publicar.</div></div>
-
-<div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
-<label for="p-website">Sitio web (no completar)</label>
-<input type="text" id="p-website" name="website" tabindex="-1" autocomplete="off">
-</div>
-
-<button type="submit" class="cta" id="p-submit">Enviar propuesta</button>
-
-<div id="p-res" style="margin-top:20px"></div>
-
-</form></div>
-
-<h3>Qué pasa después</h3>
-<p>Revisamos cada propuesta dentro de los días siguientes a su recepción. Si tiene sentido para abogados argentinos en formación continua, la publicamos. Si falta algún dato importante, te escribimos al email para pedirlo. Si decidimos no publicarla, también te avisamos con el motivo.</p>
-
-<h3>Qué tipo de eventos publicamos</h3>
-<p>Eventos jurídicos abiertos al público, organizados por instituciones argentinas: universidades, colegios profesionales, institutos, fundaciones, asociaciones, organismos públicos. Cursos, posgrados, jornadas, congresos, charlas, seminarios.</p>
-
-<h3>Qué no publicamos</h3>
-<ul>
-<li>Eventos privados o cerrados a un grupo específico.</li>
-<li>Publicidad encubierta de servicios profesionales individuales.</li>
-<li>Eventos sin relación con derecho argentino.</li>
-<li>Eventos ya finalizados.</li>
-</ul>
-
+<h2>Quién está atrás</h2>
+<p>Pórtico del Foro es un proyecto independiente, hecho por un abogado argentino que se cansó de perderse cursos. No tiene financiación de ningún colegio ni universidad, no cobra a las instituciones por aparecer y no recibe comisión por las inscripciones.</p>
+<p>El proyecto sostiene sus costos operativos con planes gratuitos de servicios de hosting y base de datos. Si en algún momento necesita financiarse, lo va a comunicar abiertamente.</p>
+<h2>Faltan eventos</h2>
+<p>Si conocés un evento, una institución o una fuente que no está en Pórtico, decinos. Sumamos lo que tenga sentido para abogados argentinos en formación continua.</p>
+<div class="cta-box"><h3>¿Conocés un evento que falta?</h3><p>Si sos institución, asistente o docente, sumalo a Pórtico del Foro. Lo revisamos y lo publicamos.</p><a class="cta" data-route="home">Proponer evento</a></div>
 </main>
 </div>
 
@@ -502,12 +457,12 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
 
 <footer><div class="f-inner">
 <div class="f-grid">
-<div class="f-about"><a class="brand" data-route="home"><img class="brand-logo" src="/assets/logos/logo_horizontal_blanco_640.png" alt="Pórtico del Foro"></a><p>Plataforma agregadora de eventos jurídicos de instituciones argentinas.</p></div>
-<div><h5>Plataforma</h5><ul><li><a data-route="home">Eventos</a></li><li><a data-route="instituciones">Instituciones</a></li><li><a data-route="areas">Áreas</a></li><li><a data-route="proponer">Proponer evento</a></li></ul></div>
+<div class="f-about"><a class="brand" data-route="home"><img class="brand-logo" src="/assets/logos/logo_horizontal_blanco_640.png" alt="Pórtico del Foro"></a><p>Plataforma agregadora de eventos jurídicos publicados públicamente por terceras instituciones de Argentina.</p></div>
+<div><h5>Plataforma</h5><ul><li><a data-route="home">Eventos</a></li><li><a data-route="instituciones">Instituciones</a></li><li><a data-route="areas">Áreas</a></li><li><a data-route="home">Proponer evento</a></li></ul></div>
 <div><h5>Sobre</h5><ul><li><a data-route="sobre">Sobre Pórtico</a></li><li><a data-route="sobre">Cómo funciona</a></li><li><a href="mailto:porticodelforo@gmail.com">Contacto</a></li></ul></div>
 <div><h5>Legal</h5><ul><li><a data-route="terminos">Términos y condiciones</a></li><li><a data-route="privacidad">Política de privacidad</a></li><li><a data-route="baja">Solicitar baja</a></li></ul></div>
 </div>
-<p class="disclaimer">Pórtico del Foro reúne información publicada por las instituciones. Siempre verificá los detalles en el sitio del organizador antes de inscribirte. No organizamos ni somos parte de los eventos listados.</p>
+<p class="disclaimer">Pórtico del Foro es una plataforma agregadora de información sobre eventos jurídicos publicados públicamente por terceras instituciones. No organizamos, no somos parte ni avalamos los eventos listados. Siempre verificá la información en el sitio del organizador antes de inscribirte.</p>
 </div></footer>
 
 <script type="module">
@@ -536,7 +491,7 @@ filtersBtn.addEventListener('click',openFilters);
 filtersCloseBtn.addEventListener('click',closeFilters);
 filtersOverlay.addEventListener('click',closeFilters);
 
-const routes = ['home','instituciones','areas','sobre','proponer','terminos','privacidad','baja'];
+const routes = ['home','instituciones','areas','sobre','terminos','privacidad','baja'];
 const loaded = new Set();
 function go(r,opts={}){
   if(!routes.includes(r)) r='home';
@@ -575,7 +530,7 @@ function evCard(e){
 function rEv(events){
   const c=document.getElementById('ev-cont');
   if(events.length===0){c.innerHTML=`<div class="empty"><h3>No hay eventos que coincidan</h3><p>Probá ajustando los filtros o limpiarlos.</p></div>`;return;}
-  c.innerHTML=`<div class="events-grid">${events.map(evCard).join('')}<div class="propose-banner"><div><h4>¿Conocés un evento que falta?</h4><p>Sumalo a Pórtico del Foro en menos de un minuto.</p></div><button class="cta" onclick="window.location.hash='proponer'">Proponer evento</button></div></div>`;
+  c.innerHTML=`<div class="events-grid">${events.map(evCard).join('')}<div class="propose-banner"><div><h4>¿Conocés un evento que falta?</h4><p>Si sos institución o asistente, sumalo a Pórtico del Foro en menos de un minuto.</p></div><button class="cta">Proponer evento</button></div></div>`;
 }
 
 function updateAreaBanner(){
@@ -654,14 +609,40 @@ function rFil(){
 
 function rSt(){
   document.getElementById('st-ev').textContent=st.ev.length;
-  document.getElementById('st-in').textContent=new Set(st.ev.map(e=>e.institution_slug).filter(Boolean)).size;
-  const a=new Set();st.ev.forEach(e=>(e.areas||[]).forEach(x=>a.add(x.slug)));
-  document.getElementById('st-ar').textContent=a.size;
   document.getElementById('st-pr').textContent=new Set(st.ev.map(e=>e.province_slug).filter(Boolean)).size;
 }
 
+async function loadFinishedCount(){
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    // Cuenta eventos donde end_date < hoy (si tiene), o start_date < hoy (si no tiene end_date)
+    // Excluye los rechazados
+    const{count,error}=await sb.from('events')
+      .select('*',{count:'exact',head:true})
+      .neq('status','rejected')
+      .or(`end_date.lt.${today},and(end_date.is.null,start_date.lt.${today})`);
+    if(error)throw error;
+    document.getElementById('st-fin').textContent=count||0;
+  }catch(err){
+    console.error('Finished count error:',err);
+    document.getElementById('st-fin').textContent='—';
+  }
+}
+
+async function loadInstCount(){
+  try{
+    // Cuenta instituciones únicas que tienen al menos un evento no rechazado
+    const{data,error}=await sb.from('events').select('institution_id').neq('status','rejected');
+    if(error)throw error;
+    const unique=new Set((data||[]).map(e=>e.institution_id).filter(Boolean));
+    document.getElementById('st-in').textContent=unique.size;
+  }catch(err){
+    console.error('Inst count error:',err);
+  }
+}
+
 async function loadEv(){
-  try{const{data,error}=await sb.from('public_events').select('*');if(error)throw error;st.ev=data||[];rSt();rFil();apply();}
+  try{const{data,error}=await sb.from('public_events').select('*');if(error)throw error;st.ev=data||[];rSt();rFil();apply();loadFinishedCount();loadInstCount();}
   catch(err){console.error(err);document.getElementById('ev-cont').innerHTML=`<div class="error"><strong>No pudimos cargar los eventos.</strong><br>${err.message||'Error desconocido.'}</div>`;}
 }
 
@@ -678,7 +659,16 @@ const TL={'universidad':'Universidades','colegio':'Colegios profesionales','orga
 const TO=['universidad','colegio','organismo_publico','instituto','asociacion','fundacion','otro'];
 async function loadIn(){
   try{
-    const{data,error}=await sb.from('institutions').select(`id,name,slug,type,city,website_url,link_status,provinces(name)`).eq('active',true).order('name');
+    // Primero traemos los IDs de instituciones que tienen al menos un evento no rechazado
+    const{data:evData,error:evErr}=await sb.from('events').select('institution_id').neq('status','rejected');
+    if(evErr)throw evErr;
+    const instIdsWithEvents=new Set((evData||[]).map(e=>e.institution_id).filter(Boolean));
+    if(instIdsWithEvents.size===0){
+      document.getElementById('inst-cont').innerHTML=`<div class="empty"><h3>No hay instituciones con eventos cargados todavía.</h3></div>`;
+      return;
+    }
+    // Ahora traemos solo las instituciones activas que están en ese set
+    const{data,error}=await sb.from('institutions').select(`id,name,slug,type,city,website_url,link_status,provinces(name)`).eq('active',true).in('id',[...instIdsWithEvents]).order('name');
     if(error)throw error;
     if(!data||data.length===0){document.getElementById('inst-cont').innerHTML=`<div class="empty"><h3>No hay instituciones cargadas todavía.</h3></div>`;return;}
     const g={};data.forEach(i=>{if(!g[i.type])g[i.type]=[];g[i.type].push(i);});
@@ -719,69 +709,6 @@ async function loadAr(){
     document.getElementById('areas-cont').innerHTML=`<div class="areas-grid">${html}</div>`;
   }catch(err){console.error(err);document.getElementById('areas-cont').innerHTML=`<div class="error"><strong>No pudimos cargar las áreas.</strong><br>${err.message||'Error desconocido.'}</div>`;}
 }
-
-const SB_FN_URL = 'https://brbbccvsrcfnsbbfkirm.supabase.co/functions/v1/propose-event';
-
-document.getElementById('p-form').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const submitBtn = document.getElementById('p-submit');
-  const resBox = document.getElementById('p-res');
-  
-  const data = {
-    proposer_name: document.getElementById('p-nom').value.trim(),
-    proposer_email: document.getElementById('p-email').value.trim(),
-    event_title: document.getElementById('p-titulo').value.trim(),
-    institution_name: document.getElementById('p-inst').value.trim(),
-    event_date_text: document.getElementById('p-fecha').value.trim(),
-    event_url: document.getElementById('p-url').value.trim(),
-    event_description: document.getElementById('p-desc').value.trim(),
-    additional_info: document.getElementById('p-info').value.trim(),
-    website: document.getElementById('p-website').value
-  };
-  
-  if(!data.proposer_name || !data.proposer_email || !data.event_title){
-    resBox.innerHTML = '<div class="alert" style="background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);color:var(--c-error)">Completá los campos obligatorios marcados con *.</div>';
-    return;
-  }
-  
-  if(data.event_title.length < 5){
-    resBox.innerHTML = '<div class="alert" style="background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);color:var(--c-error)">El título del evento debe tener al menos 5 caracteres.</div>';
-    return;
-  }
-  
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Enviando…';
-  resBox.innerHTML = '';
-  
-  try{
-    const response = await fetch(SB_FN_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SB_KEY
-      },
-      body: JSON.stringify(data)
-    });
-    
-    const result = await response.json();
-    
-    if(response.ok && result.success){
-      document.getElementById('p-form').style.display = 'none';
-      resBox.innerHTML = '<div class="alert alert-s"><strong>¡Propuesta recibida!</strong><br>Te avisamos por mail cuando la revisemos. Gracias por sumar.</div>';
-      window.scrollTo({top: 0, behavior: 'smooth'});
-    } else {
-      const errMsg = result.error || 'Error inesperado. Probá de nuevo en un momento.';
-      resBox.innerHTML = '<div class="alert" style="background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);color:var(--c-error)">' + errMsg + '</div>';
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Enviar propuesta';
-    }
-  } catch(err){
-    console.error(err);
-    resBox.innerHTML = '<div class="alert" style="background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);color:var(--c-error)">No pudimos enviar la propuesta. Revisá tu conexión y probá de nuevo.</div>';
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Enviar propuesta';
-  }
-});
 
 document.getElementById('b-form').addEventListener('submit',function(e){
   e.preventDefault();
