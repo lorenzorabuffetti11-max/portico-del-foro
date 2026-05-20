@@ -103,6 +103,15 @@ header{background:var(--c-navy);color:white;padding:14px 0;border-bottom:1px sol
 .reject-modal textarea{width:100%;border:1px solid var(--c-border);border-radius:6px;padding:10px 12px;font-family:var(--f-body);font-size:14px;color:var(--c-text);min-height:100px;resize:vertical;margin-bottom:18px}
 .reject-modal textarea:focus{outline:none;border-color:var(--c-coral)}
 .reject-modal-actions{display:flex;justify-content:flex-end;gap:10px}
+.proposal-info{background:rgba(45,138,95,0.04);border:1px solid rgba(45,138,95,0.15);border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--c-text);line-height:1.6}
+.proposal-info strong{color:var(--c-success);display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;font-weight:600}
+.proposal-info-item{margin-bottom:4px}
+.proposal-info-item span{color:var(--c-text-2);display:inline-block;min-width:90px;font-size:12px}
+.create-inst-toggle{display:inline-block;font-size:12px;color:var(--c-coral);cursor:pointer;margin-top:6px;text-decoration:underline}
+.create-inst-box{margin-top:10px;padding:14px;background:var(--c-bg);border:1px dashed var(--c-border);border-radius:6px;display:none}
+.create-inst-box.active{display:block}
+.create-inst-box .fg{margin-bottom:10px}
+.create-inst-box .fg:last-child{margin-bottom:0}
 @media (max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr;padding:20px}.h-user{display:none}}
 @media (max-width:500px){.stats{grid-template-columns:1fr}.tab{padding:10px 14px;font-size:13px}}
@@ -206,7 +215,7 @@ header{background:var(--c-navy);color:white;padding:14px 0;border-bottom:1px sol
 </div>
 
 <script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
 const SB_URL = 'https://brbbccvsrcfnsbbfkirm.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyYmJjY3ZzcmNmbnNiYmZraXJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNDY1NjIsImV4cCI6MjA5MzcyMjU2Mn0.zGdseaJ5y9DcypdHKmIqWKOPoFfbdWky_Tc1OQpClEg';
@@ -423,7 +432,7 @@ async function loadProposals() {
       <div class="ev-actions">
         ${p.event_url ? `<a class="ev-link" href="${p.event_url}" target="_blank">${p.event_url}</a>` : ''}
         <button class="btn btn-danger btn-sm" data-action="reject-proposal" data-id="${p.id}">Rechazar</button>
-        <a class="btn btn-success btn-sm" href="#new" data-action="convert-proposal" data-id="${p.id}">Convertir a evento</a>
+        <button class="btn btn-success btn-sm" data-action="approve-proposal" data-id="${p.id}">Aprobar y completar</button>
       </div>
     </div>
   `).join('');
@@ -441,7 +450,8 @@ function attachActionListeners() {
       else if (action === 'archive') await archiveEvent(id);
       else if (action === 'restore') await restoreEvent(id);
       else if (action === 'edit') openEditModal(id);
-      else if (action === 'reject-proposal') await rejectProposal(id);
+      else if (action === 'reject-proposal') openRejectProposalModal(id);
+      else if (action === 'approve-proposal') openApproveProposalModal(id);
     };
   });
 }
@@ -464,16 +474,53 @@ function openRejectModal(id) {
 document.getElementById('reject-cancel').onclick = () => {
   document.getElementById('reject-modal-bg').classList.remove('active');
   pendingRejectId = null;
+  pendingRejectProposalId = null;
+  // Restaurar título y texto default del modal
+  document.querySelector('#reject-modal-bg .reject-modal h3').textContent = 'Rechazar evento';
+  document.querySelector('#reject-modal-bg .reject-modal p').textContent = 'Indicá el motivo del rechazo. Sirve para auditoría y para no volver a procesar el mismo evento.';
 };
 document.getElementById('reject-modal-bg').addEventListener('click', e => {
   if (e.target.id === 'reject-modal-bg') {
     document.getElementById('reject-modal-bg').classList.remove('active');
     pendingRejectId = null;
+    pendingRejectProposalId = null;
+    document.querySelector('#reject-modal-bg .reject-modal h3').textContent = 'Rechazar evento';
+    document.querySelector('#reject-modal-bg .reject-modal p').textContent = 'Indicá el motivo del rechazo. Sirve para auditoría y para no volver a procesar el mismo evento.';
   }
 });
 document.getElementById('reject-confirm').onclick = async () => {
-  if (!pendingRejectId) return;
   const reason = document.getElementById('reject-reason').value.trim();
+  
+  // Caso 1: Rechazar una PROPUESTA (con email al proponente, motivo obligatorio)
+  if (pendingRejectProposalId) {
+    if (!reason || reason.length < 5) {
+      alert('El motivo es obligatorio y debe tener al menos 5 caracteres. El proponente lo va a recibir por email.');
+      document.getElementById('reject-reason').focus();
+      return;
+    }
+    
+    const btn = document.getElementById('reject-confirm');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    
+    const result = await callRejectProposalFn(pendingRejectProposalId, reason);
+    
+    btn.disabled = false;
+    btn.textContent = 'Confirmar rechazo';
+    
+    if (!result) return; // error ya mostrado por callRejectProposalFn
+    
+    document.getElementById('reject-modal-bg').classList.remove('active');
+    pendingRejectProposalId = null;
+    document.querySelector('#reject-modal-bg .reject-modal h3').textContent = 'Rechazar evento';
+    document.querySelector('#reject-modal-bg .reject-modal p').textContent = 'Indicá el motivo del rechazo. Sirve para auditoría y para no volver a procesar el mismo evento.';
+    await loadStats();
+    loadProposals();
+    return;
+  }
+  
+  // Caso 2: Rechazar un EVENTO (flujo original, motivo opcional)
+  if (!pendingRejectId) return;
   const now = new Date().toISOString();
   const { error } = await sb.from('events').update({
     status: 'rejected',
@@ -508,12 +555,306 @@ async function restoreEvent(id) {
   loadRejected();
 }
 
-async function rejectProposal(id) {
-  if (!confirm('¿Rechazar esta propuesta?')) return;
-  const { error } = await sb.from('proposals').update({ status: 'rejected', reviewed_at: new Date().toISOString() }).eq('id', id);
-  if (error) { alert('Error: ' + error.message); return; }
-  await loadStats();
-  loadProposals();
+// === Propuestas: rechazar con motivo ===
+let pendingRejectProposalId = null;
+
+function openRejectProposalModal(id) {
+  pendingRejectProposalId = id;
+  pendingRejectId = null; // reset el de eventos para que no se confunda
+  document.getElementById('reject-reason').value = '';
+  document.getElementById('reject-modal-bg').classList.add('active');
+  // Cambiar título y texto del modal temporalmente para contexto propuestas
+  document.querySelector('#reject-modal-bg .reject-modal h3').textContent = 'Rechazar propuesta';
+  document.querySelector('#reject-modal-bg .reject-modal p').textContent = 'Indicá el motivo del rechazo. El proponente lo va a recibir por email. Mínimo 5 caracteres.';
+  setTimeout(() => document.getElementById('reject-reason').focus(), 100);
+}
+
+async function callRejectProposalFn(proposalId, reason) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { alert('Sesión expirada. Iniciá sesión de nuevo.'); window.location.href = '/admin.html'; return null; }
+  
+  const response = await fetch(`${SB_URL}/functions/v1/reject-proposal`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${session.access_token}`
+    },
+    body: JSON.stringify({ proposal_id: proposalId, reason: reason })
+  });
+  
+  const result = await response.json();
+  if (!response.ok) {
+    alert('Error: ' + (result.error || 'No se pudo rechazar la propuesta'));
+    return null;
+  }
+  return result;
+}
+
+// === Propuestas: aprobar con clasificación completa ===
+let pendingApproveProposalId = null;
+let pendingApproveProposalData = null;
+
+async function openApproveProposalModal(id) {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modal-body');
+  document.getElementById('modal-title').textContent = 'Aprobar y publicar propuesta';
+  body.innerHTML = '<div class="loading">Cargando…</div>';
+  modal.classList.add('active');
+  
+  const { data: prop, error } = await sb.from('proposals').select('*').eq('id', id).single();
+  if (error || !prop) { body.innerHTML = `<div class="error">No se pudo cargar la propuesta.</div>`; return; }
+  
+  pendingApproveProposalId = id;
+  pendingApproveProposalData = prop;
+  
+  // Detectar si la institución del proponente matchea alguna existente (búsqueda fuzzy simple)
+  let matchedInstId = '';
+  if (prop.institution_name) {
+    const lower = prop.institution_name.toLowerCase();
+    const match = CATS.institutions.find(i => 
+      i.name.toLowerCase().includes(lower) || lower.includes(i.name.toLowerCase())
+    );
+    if (match) matchedInstId = match.id;
+  }
+  
+  body.innerHTML = `
+    <div class="proposal-info">
+      <strong>Propuesta original</strong>
+      <div class="proposal-info-item"><span>Propone:</span> ${escapeHtml(prop.proposer_name || '')} &lt;${escapeHtml(prop.proposer_email)}&gt;</div>
+      ${prop.institution_name ? `<div class="proposal-info-item"><span>Institución:</span> ${escapeHtml(prop.institution_name)}</div>` : ''}
+      ${prop.event_date_text ? `<div class="proposal-info-item"><span>Fecha:</span> ${escapeHtml(prop.event_date_text)}</div>` : ''}
+      ${prop.event_url ? `<div class="proposal-info-item"><span>URL:</span> <a href="${escapeHtml(prop.event_url)}" target="_blank" style="color:var(--c-coral)">${escapeHtml(prop.event_url)}</a></div>` : ''}
+      ${prop.additional_info ? `<div class="proposal-info-item" style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(45,138,95,0.15)"><span style="display:block;margin-bottom:4px">Info adicional:</span><div style="white-space:pre-wrap;color:var(--c-text)">${escapeHtml(prop.additional_info)}</div></div>` : ''}
+    </div>
+    
+    <form class="form-grid" id="approve-form" style="border:none;padding:0">
+      <div class="fg full"><label>Título <span class="req">*</span></label><input type="text" id="ap-title" required value="${escapeHtmlAttr(prop.event_title)}"></div>
+      
+      <div class="fg"><label>Institución <span class="req">*</span></label>
+        <select id="ap-institution" required>
+          <option value="">— Elegí una —</option>
+          ${CATS.institutions.map(i => `<option value="${i.id}" ${i.id === matchedInstId ? 'selected' : ''}>${escapeHtml(i.name)}</option>`).join('')}
+          <option value="__create__">+ Crear nueva institución</option>
+        </select>
+        <span class="create-inst-toggle" id="ap-create-inst-link" style="display:none">Completá los datos abajo</span>
+        <div class="create-inst-box" id="ap-create-inst-box">
+          <div class="fg"><label>Nombre completo <span class="req">*</span></label><input type="text" id="ap-new-inst-name" value="${escapeHtmlAttr(prop.institution_name || '')}"></div>
+          <div class="fg"><label>Tipo <span class="req">*</span></label>
+            <select id="ap-new-inst-type">
+              <option value="universidad">Universidad</option>
+              <option value="colegio">Colegio profesional</option>
+              <option value="instituto">Instituto</option>
+              <option value="organismo_publico">Organismo público / judicial</option>
+              <option value="asociacion">Asociación</option>
+              <option value="fundacion">Fundación</option>
+              <option value="otro">Otra</option>
+            </select>
+          </div>
+          <div class="fg"><label>Provincia</label>
+            <select id="ap-new-inst-province">
+              <option value="">— Sin especificar —</option>
+              ${CATS.provinces.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fg"><label>Ciudad <span class="opt">(opcional)</span></label><input type="text" id="ap-new-inst-city" placeholder="Ej: CABA"></div>
+          <div class="fg"><label>Sitio web <span class="opt">(opcional)</span></label><input type="url" id="ap-new-inst-url" placeholder="https://..."></div>
+        </div>
+      </div>
+      
+      <div class="fg"><label>Tipo de evento <span class="req">*</span></label><select id="ap-type" required><option value="">— Elegí uno —</option>${CATS.types.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('')}</select></div>
+      
+      <div class="fg"><label>Modalidad <span class="req">*</span></label><select id="ap-modality" required><option value="presencial">Presencial</option><option value="virtual">Virtual</option><option value="hibrida">Híbrida</option></select></div>
+      
+      <div class="fg"><label>Costo <span class="req">*</span></label><select id="ap-cost" required><option value="no_especificado">No especificado</option><option value="gratuito">Gratuito</option><option value="arancelado">Arancelado</option><option value="becado">Becado</option></select></div>
+      
+      <div class="fg"><label>Fecha de inicio</label><input type="date" id="ap-date"></div>
+      
+      <div class="fg"><label>Provincia</label><select id="ap-province"><option value="">— Sin especificar —</option>${CATS.provinces.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select></div>
+      
+      <div class="fg full"><label>Áreas del derecho <span class="opt">(opcional)</span></label><div class="areas-multi" id="ap-areas">${CATS.areas.map(a => `<div class="area-chip" data-id="${a.id}">${escapeHtml(a.name)}</div>`).join('')}</div></div>
+      
+      <div class="fg"><label>Duración</label><input type="text" id="ap-duration" placeholder="Ej: 4 meses · 240 horas"></div>
+      <div class="fg"><label>Docente / Expositor</label><input type="text" id="ap-instructor"></div>
+      <div class="fg"><label>Ciudad</label><input type="text" id="ap-city"></div>
+      <div class="fg"><label>Dirección</label><input type="text" id="ap-address"></div>
+      
+      <div class="fg full"><label>URL externa <span class="opt">(opcional)</span></label><input type="url" id="ap-url" value="${escapeHtmlAttr(prop.event_url || '')}"></div>
+      
+      <div class="fg full"><label>Descripción pública</label><textarea id="ap-desc" placeholder="Descripción que ve el usuario en el sitio">${escapeHtml(prop.event_description || '')}</textarea></div>
+      
+      <div id="approve-result" class="full"></div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="approve-cancel">Cancelar</button>
+        <button type="submit" class="btn btn-success" id="approve-submit">Publicar evento y notificar</button>
+      </div>
+    </form>
+  `;
+  
+  // Listeners de chips de áreas
+  body.querySelectorAll('#ap-areas .area-chip').forEach(chip => chip.addEventListener('click', () => chip.classList.toggle('selected')));
+  
+  // Toggle de crear nueva institución
+  const instSelect = document.getElementById('ap-institution');
+  const createBox = document.getElementById('ap-create-inst-box');
+  const createLink = document.getElementById('ap-create-inst-link');
+  instSelect.addEventListener('change', () => {
+    if (instSelect.value === '__create__') {
+      createBox.classList.add('active');
+      createLink.style.display = 'inline-block';
+    } else {
+      createBox.classList.remove('active');
+      createLink.style.display = 'none';
+    }
+  });
+  
+  // Cancelar
+  document.getElementById('approve-cancel').onclick = () => {
+    modal.classList.remove('active');
+    pendingApproveProposalId = null;
+    pendingApproveProposalData = null;
+  };
+  
+  // Submit
+  document.getElementById('approve-form').onsubmit = async (e) => {
+    e.preventDefault();
+    await submitApproveProposal();
+  };
+}
+
+async function submitApproveProposal() {
+  const submitBtn = document.getElementById('approve-submit');
+  const resultBox = document.getElementById('approve-result');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Publicando…';
+  resultBox.innerHTML = '';
+  
+  try {
+    let institutionId = document.getElementById('ap-institution').value;
+    let institutionNameDisplay = '';
+    
+    // Si pidió crear nueva institución, crearla primero
+    if (institutionId === '__create__') {
+      const newInstName = document.getElementById('ap-new-inst-name').value.trim();
+      const newInstType = document.getElementById('ap-new-inst-type').value;
+      const newInstProvince = document.getElementById('ap-new-inst-province').value;
+      const newInstCity = document.getElementById('ap-new-inst-city').value.trim();
+      const newInstUrl = document.getElementById('ap-new-inst-url').value.trim();
+      
+      if (!newInstName || newInstName.length < 3) {
+        resultBox.innerHTML = '<div class="error">El nombre de la institución debe tener al menos 3 caracteres.</div>';
+        submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento y notificar';
+        return;
+      }
+      
+      const newInstSlug = slugify(newInstName) + '-' + Date.now().toString(36);
+      const { data: createdInst, error: instErr } = await sb.from('institutions').insert({
+        name: newInstName,
+        slug: newInstSlug,
+        type: newInstType,
+        province_id: newInstProvince ? parseInt(newInstProvince) : null,
+        city: newInstCity || null,
+        website_url: newInstUrl || null,
+        active: true
+      }).select().single();
+      
+      if (instErr) {
+        resultBox.innerHTML = `<div class="error">Error al crear institución: ${instErr.message}</div>`;
+        submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento y notificar';
+        return;
+      }
+      
+      institutionId = createdInst.id;
+      institutionNameDisplay = createdInst.name;
+      // Agregar al catálogo en memoria para no tener que recargar
+      CATS.institutions.push(createdInst);
+    } else if (institutionId) {
+      const inst = CATS.institutions.find(i => i.id === institutionId);
+      institutionNameDisplay = inst ? inst.name : '';
+    }
+    
+    if (!institutionId) {
+      resultBox.innerHTML = '<div class="error">Elegí una institución o creá una nueva.</div>';
+      submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento y notificar';
+      return;
+    }
+    
+    const eventTypeId = parseInt(document.getElementById('ap-type').value);
+    if (!eventTypeId) {
+      resultBox.innerHTML = '<div class="error">Elegí un tipo de evento.</div>';
+      submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento y notificar';
+      return;
+    }
+    
+    const selectedAreas = [...document.querySelectorAll('#ap-areas .area-chip.selected')].map(c => parseInt(c.dataset.id));
+    
+    const eventData = {
+      title: document.getElementById('ap-title').value.trim(),
+      description: document.getElementById('ap-desc').value.trim() || null,
+      institution_id: institutionId,
+      institution_name_display: institutionNameDisplay,
+      event_type_id: eventTypeId,
+      province_id: document.getElementById('ap-province').value ? parseInt(document.getElementById('ap-province').value) : null,
+      start_date: document.getElementById('ap-date').value || null,
+      modality: document.getElementById('ap-modality').value,
+      cost_type: document.getElementById('ap-cost').value,
+      duration_text: document.getElementById('ap-duration').value.trim() || null,
+      instructor: document.getElementById('ap-instructor').value.trim() || null,
+      city: document.getElementById('ap-city').value.trim() || null,
+      location_address: document.getElementById('ap-address').value.trim() || null,
+      external_url: document.getElementById('ap-url').value.trim() || null,
+    };
+    
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { alert('Sesión expirada.'); window.location.href = '/admin.html'; return; }
+    
+    const response = await fetch(`${SB_URL}/functions/v1/approve-proposal`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({
+        proposal_id: pendingApproveProposalId,
+        event_data: eventData,
+        area_ids: selectedAreas
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (!response.ok || !result.success) {
+      resultBox.innerHTML = `<div class="error">${result.error || 'Error al publicar el evento'}</div>`;
+      submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento y notificar';
+      return;
+    }
+    
+    resultBox.innerHTML = '<div class="success">✅ Evento publicado y proponente notificado por email.</div>';
+    setTimeout(async () => {
+      document.getElementById('modal').classList.remove('active');
+      pendingApproveProposalId = null;
+      pendingApproveProposalData = null;
+      await loadStats();
+      loadProposals();
+    }, 1500);
+    
+  } catch (err) {
+    console.error(err);
+    resultBox.innerHTML = `<div class="error">Error inesperado: ${err.message}</div>`;
+    submitBtn.disabled = false; submitBtn.textContent = 'Publicar evento y notificar';
+  }
+}
+
+// Helpers de escape para evitar XSS en el modal
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+function escapeHtmlAttr(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
 function slugify(s) {
