@@ -715,32 +715,27 @@ function rFil(){
 
 function rSt(){
   document.getElementById('st-ev').textContent=st.ev.length;
-  document.getElementById('st-pr').textContent=new Set(st.ev.map(e=>e.province_slug).filter(Boolean)).size;
 }
 
-async function loadFinishedCount(){
+async function loadStats(){
   try{
     const today=new Date().toISOString().slice(0,10);
-    const{count,error}=await sb.from('events')
-      .select('*',{count:'exact',head:true})
-      .neq('status','rejected')
-      .or(`end_date.lt.${today},and(end_date.is.null,start_date.lt.${today})`);
+    const{data,error}=await sb.from('events')
+      .select('institution_id,province_slug,start_date,status')
+      .eq('status','approved');
     if(error)throw error;
-    document.getElementById('st-fin').textContent=count||0;
+    const rows=data||[];
+    const instSet=new Set(rows.map(e=>e.institution_id).filter(Boolean));
+    const provSet=new Set(rows.map(e=>e.province_slug).filter(Boolean));
+    const finished=rows.filter(e=>e.start_date&&e.start_date<today).length;
+    document.getElementById('st-in').textContent=instSet.size;
+    document.getElementById('st-fin').textContent=finished;
+    document.getElementById('st-pr').textContent=provSet.size;
   }catch(err){
-    console.error('Finished count error:',err);
+    console.error('Stats error:',err);
+    document.getElementById('st-in').textContent='—';
     document.getElementById('st-fin').textContent='—';
-  }
-}
-
-async function loadInstCount(){
-  try{
-    const{data,error}=await sb.from('events').select('institution_id').neq('status','rejected');
-    if(error)throw error;
-    const unique=new Set((data||[]).map(e=>e.institution_id).filter(Boolean));
-    document.getElementById('st-in').textContent=unique.size;
-  }catch(err){
-    console.error('Inst count error:',err);
+    document.getElementById('st-pr').textContent='—';
   }
 }
 
@@ -748,7 +743,7 @@ async function loadEv(){
   try{const{data,error}=await sb.from('public_events').select('*');if(error)throw error;
     const today=new Date().toISOString().slice(0,10);
     st.ev=(data||[]).filter(e=>!e.start_date||e.start_date>=today);
-    rSt();rFil();apply();loadFinishedCount();loadInstCount();}
+    rSt();rFil();apply();loadStats();}
   catch(err){console.error(err);document.getElementById('ev-cont').innerHTML=`<div class="error"><strong>No pudimos cargar los eventos.</strong><br>${err.message||'Error desconocido.'}</div>`;}
 }
 
