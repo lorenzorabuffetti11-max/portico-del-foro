@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "portico-del-foro.vercel.app"
+        }
+      ],
+      "destination": "https://porticodelforo.com.ar/:path*",
+      "permanent": true
+    }
+  ]
+}
