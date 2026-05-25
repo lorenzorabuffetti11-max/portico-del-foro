@@ -720,9 +720,8 @@ function rSt(){
 async function loadStats(){
   try{
     const today=new Date().toISOString().slice(0,10);
-    const{data,error}=await sb.from('events')
-      .select('institution_id,province_slug,start_date,status')
-      .eq('status','approved');
+    const{data,error}=await sb.from('public_events')
+      .select('institution_id,province_slug,start_date');
     if(error)throw error;
     const rows=data||[];
     const instSet=new Set(rows.map(e=>e.institution_id).filter(Boolean));
