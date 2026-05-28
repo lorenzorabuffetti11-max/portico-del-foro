@@ -161,6 +161,7 @@ header{background:var(--c-navy);color:white;padding:14px 0;border-bottom:1px sol
       <div class="fg"><label>Tipo de evento <span class="req">*</span></label><select id="f-type" required><option value="">Cargando…</option></select></div>
       <div class="fg"><label>Modalidad <span class="req">*</span></label><select id="f-modality" required><option value="presencial">Presencial</option><option value="virtual">Virtual</option><option value="hibrida">Híbrida</option></select></div>
       <div class="fg"><label>Costo <span class="req">*</span></label><select id="f-cost" required><option value="gratuito">Gratuito</option><option value="arancelado">Arancelado</option><option value="becado">Becado</option><option value="no_especificado">No especificado</option></select></div>
+      <div class="fg"><label>Periodicidad</label><select id="f-recurrence"><option value="none">Único</option><option value="monthly">Mensual</option><option value="quarterly">Trimestral</option><option value="four_monthly">Cuatrimestral</option><option value="annual">Anual</option></select></div>
       <div class="fg"><label>Fecha de inicio</label><input type="date" id="f-date"></div>
       <div class="fg"><label>Provincia</label><select id="f-province"><option value="">— Sin especificar —</option></select></div>
       <div class="fg full"><label>Áreas del derecho <span class="opt">(opcional)</span></label><div class="areas-multi" id="f-areas"></div><div class="fg-help">Click para seleccionar/deseleccionar. Si el evento no encaja en ninguna, dejá vacío.</div></div>
@@ -668,6 +669,8 @@ async function openApproveProposalModal(id) {
       
       <div class="fg"><label>Costo <span class="req">*</span></label><select id="ap-cost" required><option value="no_especificado">No especificado</option><option value="gratuito">Gratuito</option><option value="arancelado">Arancelado</option><option value="becado">Becado</option></select></div>
       
+      <div class="fg"><label>Periodicidad</label><select id="ap-recurrence"><option value="none">Único</option><option value="monthly">Mensual</option><option value="quarterly">Trimestral</option><option value="four_monthly">Cuatrimestral</option><option value="annual">Anual</option></select></div>
+      
       <div class="fg"><label>Fecha de inicio</label><input type="date" id="ap-date"></div>
       
       <div class="fg"><label>Provincia</label><select id="ap-province"><option value="">— Sin especificar —</option>${CATS.provinces.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select></div>
@@ -799,6 +802,7 @@ async function submitApproveProposal() {
       start_date: document.getElementById('ap-date').value || null,
       modality: document.getElementById('ap-modality').value,
       cost_type: document.getElementById('ap-cost').value,
+      recurrence: document.getElementById('ap-recurrence').value,
       duration_text: document.getElementById('ap-duration').value.trim() || null,
       instructor: document.getElementById('ap-instructor').value.trim() || null,
       city: document.getElementById('ap-city').value.trim() || null,
@@ -881,6 +885,7 @@ async function openEditModal(id) {
       <div class="fg"><label>Tipo</label><select id="e-type">${CATS.types.map(t => `<option value="${t.id}" ${t.id === ev.event_type_id ? 'selected' : ''}>${t.name}</option>`).join('')}</select></div>
       <div class="fg"><label>Modalidad</label><select id="e-modality"><option value="presencial" ${ev.modality === 'presencial' ? 'selected' : ''}>Presencial</option><option value="virtual" ${ev.modality === 'virtual' ? 'selected' : ''}>Virtual</option><option value="hibrida" ${ev.modality === 'hibrida' ? 'selected' : ''}>Híbrida</option></select></div>
       <div class="fg"><label>Costo</label><select id="e-cost"><option value="gratuito" ${ev.cost_type === 'gratuito' ? 'selected' : ''}>Gratuito</option><option value="arancelado" ${ev.cost_type === 'arancelado' ? 'selected' : ''}>Arancelado</option><option value="becado" ${ev.cost_type === 'becado' ? 'selected' : ''}>Becado</option><option value="no_especificado" ${ev.cost_type === 'no_especificado' ? 'selected' : ''}>No especificado</option></select></div>
+      <div class="fg"><label>Periodicidad</label><select id="e-recurrence"><option value="none" ${(ev.recurrence || 'none') === 'none' ? 'selected' : ''}>Único</option><option value="monthly" ${ev.recurrence === 'monthly' ? 'selected' : ''}>Mensual</option><option value="quarterly" ${ev.recurrence === 'quarterly' ? 'selected' : ''}>Trimestral</option><option value="four_monthly" ${ev.recurrence === 'four_monthly' ? 'selected' : ''}>Cuatrimestral</option><option value="annual" ${ev.recurrence === 'annual' ? 'selected' : ''}>Anual</option></select></div>
       <div class="fg"><label>Fecha de inicio</label><input type="date" id="e-date" value="${ev.start_date || ''}"></div>
       <div class="fg"><label>Provincia</label><select id="e-province"><option value="">—</option>${CATS.provinces.map(p => `<option value="${p.id}" ${p.id === ev.province_id ? 'selected' : ''}>${p.name}</option>`).join('')}</select></div>
       <div class="fg full"><label>Áreas <span class="opt">(opcional)</span></label><div class="areas-multi" id="e-areas">${CATS.areas.map(a => `<div class="area-chip ${selectedAreaIds.has(a.id) ? 'selected' : ''}" data-id="${a.id}">${a.name}</div>`).join('')}</div></div>
@@ -911,6 +916,7 @@ async function openEditModal(id) {
       event_type_id: parseInt(document.getElementById('e-type').value),
       modality: document.getElementById('e-modality').value,
       cost_type: document.getElementById('e-cost').value,
+      recurrence: document.getElementById('e-recurrence').value,
       start_date: document.getElementById('e-date').value || null,
       province_id: document.getElementById('e-province').value ? parseInt(document.getElementById('e-province').value) : null,
       duration_text: document.getElementById('e-duration').value.trim() || null,
@@ -967,6 +973,7 @@ document.getElementById('new-form').onsubmit = async (e) => {
     event_type_id: parseInt(document.getElementById('f-type').value),
     modality: document.getElementById('f-modality').value,
     cost_type: document.getElementById('f-cost').value,
+    recurrence: document.getElementById('f-recurrence').value,
     start_date: document.getElementById('f-date').value || null,
     province_id: document.getElementById('f-province').value ? parseInt(document.getElementById('f-province').value) : null,
     duration_text: document.getElementById('f-duration').value.trim() || null,
