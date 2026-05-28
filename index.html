@@ -111,6 +111,7 @@ nav a.active{border-bottom:2px solid var(--c-coral);padding-bottom:4px}
 .badge.coral{background:rgba(230,57,70,0.1);color:var(--c-coral)}
 .badge.green{background:rgba(45,138,95,0.1);color:var(--c-success)}
 .badge.gray{background:var(--c-hover);color:var(--c-text-3)}
+.badge.recurrent{background:rgba(26,46,74,0.08);color:var(--c-navy);border:1px solid rgba(26,46,74,0.18)}
 .ev-card h3{font-family:var(--f-display);font-size:20px;font-weight:500;line-height:1.25;color:var(--c-navy);margin-bottom:10px;letter-spacing:-0.01em}
 .ev-inst{font-size:13px;color:var(--c-text-2);margin-bottom:12px;font-weight:500}
 .ev-desc-card{font-size:13px;color:var(--c-text-2);line-height:1.55;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -312,6 +313,9 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
 <label class="f-opt"><input type="checkbox" data-f="cost" value="arancelado"> <span class="label-text">Arancelado</span></label>
 <label class="f-opt" id="f-cost-becado"><input type="checkbox" data-f="cost" value="becado"> <span class="label-text">Becado</span></label>
 <label class="f-opt"><input type="checkbox" data-f="cost" value="no_especificado"> <span class="label-text">No especificado</span></label>
+</div>
+<div class="f-group"><h3>Periodicidad</h3>
+<label class="f-opt"><input type="checkbox" data-f="recurrent" value="yes"> <span class="label-text">Evento recurrente</span></label>
 </div>
 <div class="f-group"><h3>Provincia</h3><div class="f-list" id="f-prov"></div></div>
 <div class="f-group"><h3>Área del derecho</h3><div class="f-list" id="f-areas"></div></div>
@@ -580,12 +584,13 @@ function go(r,opts={}){
 document.addEventListener('click',e=>{const t=e.target.closest('[data-route]');if(t){e.preventDefault();const areaSlug=t.dataset.areaSlug;go(t.dataset.route,{areaSlug});}});
 window.addEventListener('hashchange',()=>go(window.location.hash.replace('#','')||'home'));
 
-const st={ev:[],f:{types:new Set(),institutions:new Set(),modality:new Set(),cost:new Set(),provinces:new Set(),areas:new Set()},s:'',sort:'date-asc'};
+const st={ev:[],f:{types:new Set(),institutions:new Set(),modality:new Set(),cost:new Set(),provinces:new Set(),areas:new Set(),recurrent:new Set()},s:'',sort:'date-asc'};
 
 function fd(d){if(!d)return null;const m=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];const x=new Date(d+'T00:00:00');return `${x.getDate()} ${m[x.getMonth()]} ${x.getFullYear()}`;}
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 function costLabel(c){if(c==='no_especificado')return 'Costo a confirmar';return cap(c);}
 function costClass(c){if(c==='gratuito')return 'green';if(c==='no_especificado')return 'gray';return 'coral';}
+function recurrenceLabel(r){const map={monthly:'Mensual',quarterly:'Trimestral',four_monthly:'Cuatrimestral',annual:'Anual'};return map[r]||'';}
 function escapeHtml(s){if(!s)return '';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
 
 function urlSourceLabel(url){
@@ -611,7 +616,7 @@ function evCard(e){
   const footer=hasUrl
     ?`<div class="ev-footer">${urlSourceLabel(e.external_url)} →</div>`
     :`<div class="ev-footer ev-footer-mute">Consultá al organizador para más info</div>`;
-  return `<${tag} class="ev-card${hasUrl?'':' ev-card-nolink'}" ${attrs}><div class="ev-meta"><span class="badge">${e.event_type_name||''}</span><span class="badge">${cap(e.modality)}</span><span class="badge ${costClass(e.cost_type)}">${costLabel(e.cost_type)}</span></div><h3>${escapeHtml(e.title)}</h3><div class="ev-inst">${escapeHtml(e.institution_name||'')}</div>${desc}<div class="ev-det">${dt?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span><strong>Inicio:</strong> ${dt}</span></div>`:''}${e.duration_text?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg><span>${escapeHtml(e.duration_text)}</span></div>`:''}${e.instructor?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span>${escapeHtml(e.instructor)}</span></div>`:''}${loc?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${escapeHtml(loc)}</span></div>`:''}</div>${footer}</${tag}>`;
+  return `<${tag} class="ev-card${hasUrl?'':' ev-card-nolink'}" ${attrs}><div class="ev-meta"><span class="badge">${e.event_type_name||''}</span><span class="badge">${cap(e.modality)}</span><span class="badge ${costClass(e.cost_type)}">${costLabel(e.cost_type)}</span>${e.recurrence&&e.recurrence!=='none'?`<span class="badge recurrent">↻ ${recurrenceLabel(e.recurrence)}</span>`:''}</div><h3>${escapeHtml(e.title)}</h3><div class="ev-inst">${escapeHtml(e.institution_name||'')}</div>${desc}<div class="ev-det">${dt?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span><strong>Inicio:</strong> ${dt}</span></div>`:''}${e.duration_text?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg><span>${escapeHtml(e.duration_text)}</span></div>`:''}${e.instructor?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span>${escapeHtml(e.instructor)}</span></div>`:''}${loc?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${escapeHtml(loc)}</span></div>`:''}</div>${footer}</${tag}>`;
 }
 
 function rEv(events){
@@ -658,6 +663,7 @@ function apply(){
   if(st.f.cost.size>0)f=f.filter(e=>st.f.cost.has(e.cost_type));
   if(st.f.provinces.size>0)f=f.filter(e=>st.f.provinces.has(e.province_slug));
   if(st.f.areas.size>0)f=f.filter(e=>e.areas&&e.areas.some(a=>st.f.areas.has(a.slug)));
+  if(st.f.recurrent.size>0)f=f.filter(e=>e.recurrence&&e.recurrence!=='none');
   if(st.sort==='date-asc')f.sort((a,b)=>(a.start_date||'9999').localeCompare(b.start_date||'9999'));
   else if(st.sort==='date-desc')f.sort((a,b)=>(b.start_date||'0').localeCompare(a.start_date||'0'));
   else if(st.sort==='created-desc')f.sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));
@@ -666,7 +672,7 @@ function apply(){
 }
 
 function updateFilterCount(){
-  const total=st.f.types.size+st.f.institutions.size+st.f.modality.size+st.f.cost.size+st.f.provinces.size+st.f.areas.size;
+  const total=st.f.types.size+st.f.institutions.size+st.f.modality.size+st.f.cost.size+st.f.provinces.size+st.f.areas.size+st.f.recurrent.size;
   const badge=document.getElementById('filters-count');
   if(total>0){badge.textContent=total;badge.style.display='inline-block';}
   else{badge.style.display='none';}
