@@ -436,7 +436,6 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
 <section class="page-h"><div class="page-h-inner">
 <div class="page-eyebrow">Legal</div>
 <h1>Términos y Condiciones</h1>
-<p>Las reglas que rigen el uso de Pórtico del Foro. Sin letra chica.</p>
 </div></section>
 <main class="content">
 <h2>1. Qué es Pórtico del Foro</h2>
@@ -472,7 +471,6 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
 <section class="page-h"><div class="page-h-inner">
 <div class="page-eyebrow">Legal</div>
 <h1>Política de Privacidad</h1>
-<p>Lo que efectivamente hacemos con datos en Pórtico del Foro. Sin promesas vacías.</p>
 </div></section>
 <main class="content">
 <h2>1. Qué datos recolectamos de visitantes</h2>
@@ -616,7 +614,7 @@ function evCard(e){
   const footer=hasUrl
     ?`<div class="ev-footer">${urlSourceLabel(e.external_url)} →</div>`
     :`<div class="ev-footer ev-footer-mute">Consultá al organizador para más info</div>`;
-  return `<${tag} class="ev-card${hasUrl?'':' ev-card-nolink'}" ${attrs}><div class="ev-meta"><span class="badge">${e.event_type_name||''}</span><span class="badge">${cap(e.modality)}</span><span class="badge ${costClass(e.cost_type)}">${costLabel(e.cost_type)}</span>${e.recurrence&&e.recurrence!=='none'?`<span class="badge recurrent">↻ ${recurrenceLabel(e.recurrence)}</span>`:''}</div><h3>${escapeHtml(e.title)}</h3><div class="ev-inst">${escapeHtml(e.institution_name||'')}</div>${desc}<div class="ev-det">${dt?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span><strong>Inicio:</strong> ${dt}</span></div>`:''}${e.duration_text?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg><span>${escapeHtml(e.duration_text)}</span></div>`:''}${e.instructor?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span>${escapeHtml(e.instructor)}</span></div>`:''}${loc?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${escapeHtml(loc)}</span></div>`:''}</div>${footer}</${tag}>`;
+  return `<${tag} class="ev-card${hasUrl?'':' ev-card-nolink'}" ${attrs}><div class="ev-meta"><span class="badge">${e.event_type_name||''}</span><span class="badge">${cap(e.modality)}</span><span class="badge ${costClass(e.cost_type)}">${costLabel(e.cost_type)}</span>${e.recurrence&&e.recurrence!=='none'?`<span class="badge recurrent">↻ Evento recurrente</span>`:''}</div><h3>${escapeHtml(e.title)}</h3><div class="ev-inst">${escapeHtml(e.institution_name||'')}</div>${desc}<div class="ev-det">${dt?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span><strong>Inicio:</strong> ${dt}</span></div>`:''}${e.duration_text?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg><span>${escapeHtml(e.duration_text)}</span></div>`:''}${e.instructor?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span>${escapeHtml(e.instructor)}</span></div>`:''}${loc?`<div class="ev-d"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${escapeHtml(loc)}</span></div>`:''}</div>${footer}</${tag}>`;
 }
 
 function rEv(events){
