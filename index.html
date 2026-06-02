@@ -95,6 +95,15 @@ nav a.active{border-bottom:2px solid var(--c-coral);padding-bottom:4px}
 .f-opt .count{color:var(--c-text-3);font-size:12px;margin-left:8px;flex-shrink:0}
 .clear-f{background:none;border:1px solid var(--c-border);color:var(--c-text-2);padding:9px 14px;border-radius:var(--r);font-family:var(--f-body);font-size:12px;cursor:pointer;width:100%;transition:all 0.15s}
 .clear-f:hover{border-color:var(--c-coral);color:var(--c-coral)}
+.f-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.f-chip{background:white;border:1px solid var(--c-border);color:var(--c-text-2);padding:5px 10px;border-radius:20px;font-family:var(--f-body);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s}
+.f-chip:hover{border-color:var(--c-coral);color:var(--c-coral)}
+.f-chip.active{background:var(--c-navy);border-color:var(--c-navy);color:white}
+.f-dates{display:flex;flex-direction:column;gap:8px}
+.f-date-field{display:flex;flex-direction:column;gap:4px}
+.f-date-field span{font-size:12px;color:var(--c-text-2);font-weight:500}
+.f-date-field input{width:100%;padding:7px 10px;border:1px solid var(--c-border);border-radius:var(--r);font-family:var(--f-body);font-size:13px;color:var(--c-text);background:white;outline:none;transition:border-color 0.15s}
+.f-date-field input:focus{border-color:var(--c-coral)}
 .list-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--c-border);gap:12px;flex-wrap:wrap}
 .list-h h2{font-family:var(--f-display);font-size:30px;font-weight:500;color:var(--c-navy);letter-spacing:-0.01em}
 .sort{font-size:13px;color:var(--c-text-2)}
@@ -306,6 +315,18 @@ footer{background:var(--c-navy);color:#c5d2e0;padding:64px 24px 32px;margin-top:
   </button>
 </div>
 <div class="f-group"><h3>Tipo de evento</h3><div class="f-list" id="f-types"></div></div>
+<div class="f-group"><h3>Fecha</h3>
+<div class="f-presets" id="f-date-presets">
+<button type="button" class="f-chip" data-preset="all">Todas</button>
+<button type="button" class="f-chip" data-preset="month">Este mes</button>
+<button type="button" class="f-chip" data-preset="30">Próx. 30 días</button>
+<button type="button" class="f-chip" data-preset="90">Próx. 3 meses</button>
+</div>
+<div class="f-dates">
+<label class="f-date-field"><span>Desde</span><input type="date" id="f-date-from"></label>
+<label class="f-date-field"><span>Hasta</span><input type="date" id="f-date-to"></label>
+</div>
+</div>
 <div class="f-group"><h3>Institución</h3><div class="f-list" id="f-institutions"></div></div>
 <div class="f-group"><h3>Modalidad</h3>
 <label class="f-opt"><input type="checkbox" data-f="modality" value="presencial"> <span class="label-text">Presencial</span></label>
@@ -586,7 +607,7 @@ function go(r,opts={}){
 document.addEventListener('click',e=>{const t=e.target.closest('[data-route]');if(t){e.preventDefault();const areaSlug=t.dataset.areaSlug;go(t.dataset.route,{areaSlug});}});
 window.addEventListener('hashchange',()=>go(window.location.hash.replace('#','')||'home'));
 
-const st={ev:[],f:{types:new Set(),institutions:new Set(),modality:new Set(),cost:new Set(),provinces:new Set(),areas:new Set(),recurrent:new Set()},s:'',sort:'date-asc'};
+const st={ev:[],f:{types:new Set(),institutions:new Set(),modality:new Set(),cost:new Set(),provinces:new Set(),areas:new Set(),recurrent:new Set()},s:'',sort:'date-asc',dateFrom:'',dateTo:''};
 
 function fd(d){if(!d)return null;const m=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];const x=new Date(d+'T00:00:00');return `${x.getDate()} ${m[x.getMonth()]} ${x.getFullYear()}`;}
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
@@ -699,6 +720,8 @@ function apply(){
   if(st.f.provinces.size>0)f=f.filter(e=>st.f.provinces.has(e.province_slug));
   if(st.f.areas.size>0)f=f.filter(e=>e.areas&&e.areas.some(a=>st.f.areas.has(a.slug)));
   if(st.f.recurrent.size>0)f=f.filter(e=>e.recurrence&&e.recurrence!=='none');
+  if(st.dateFrom)f=f.filter(e=>e.start_date&&e.start_date>=st.dateFrom);
+  if(st.dateTo)f=f.filter(e=>e.start_date&&e.start_date<=st.dateTo);
   if(st.sort==='date-asc')f.sort((a,b)=>(a.start_date||'9999').localeCompare(b.start_date||'9999'));
   else if(st.sort==='date-desc')f.sort((a,b)=>(b.start_date||'0').localeCompare(a.start_date||'0'));
   else if(st.sort==='created-desc')f.sort((a,b)=>(b.created_at||'').localeCompare(a.created_at||''));
@@ -707,7 +730,8 @@ function apply(){
 }
 
 function updateFilterCount(){
-  const total=st.f.types.size+st.f.institutions.size+st.f.modality.size+st.f.cost.size+st.f.provinces.size+st.f.areas.size+st.f.recurrent.size;
+  const dateActive=(st.dateFrom||st.dateTo)?1:0;
+  const total=st.f.types.size+st.f.institutions.size+st.f.modality.size+st.f.cost.size+st.f.provinces.size+st.f.areas.size+st.f.recurrent.size+dateActive;
   const badge=document.getElementById('filters-count');
   if(total>0){badge.textContent=total;badge.style.display='inline-block';}
   else{badge.style.display='none';}
@@ -793,8 +817,33 @@ document.getElementById('s-sel').addEventListener('change',e=>{st.sort=e.target.
 document.getElementById('clear-f').addEventListener('click',()=>{
   Object.values(st.f).forEach(s=>s.clear());
   document.querySelectorAll('.f-opt input[type="checkbox"]').forEach(cb=>cb.checked=false);
+  st.dateFrom='';st.dateTo='';
+  const _df=document.getElementById('f-date-from');const _dt=document.getElementById('f-date-to');
+  if(_df)_df.value='';if(_dt)_dt.value='';
+  document.querySelectorAll('#f-date-presets .f-chip').forEach(c=>c.classList.remove('active'));
   apply();updateFilterCount();
 });
+
+// Filtro por rango de fechas (presets + inputs Desde/Hasta)
+(function(){
+  const fFrom=document.getElementById('f-date-from');
+  const fTo=document.getElementById('f-date-to');
+  const iso=d=>d.toISOString().slice(0,10);
+  function setChip(p){document.querySelectorAll('#f-date-presets .f-chip').forEach(c=>c.classList.toggle('active',!!p&&c.dataset.preset===p));}
+  function syncInputs(){if(fFrom)fFrom.value=st.dateFrom;if(fTo)fTo.value=st.dateTo;}
+  if(fFrom)fFrom.addEventListener('change',()=>{st.dateFrom=fFrom.value;setChip(null);apply();updateFilterCount();});
+  if(fTo)fTo.addEventListener('change',()=>{st.dateTo=fTo.value;setChip(null);apply();updateFilterCount();});
+  document.querySelectorAll('#f-date-presets .f-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const p=chip.dataset.preset;const t=new Date();
+      if(p==='all'){st.dateFrom='';st.dateTo='';}
+      else if(p==='month'){st.dateFrom=iso(new Date(t.getFullYear(),t.getMonth(),1));st.dateTo=iso(new Date(t.getFullYear(),t.getMonth()+1,0));}
+      else if(p==='30'){st.dateFrom=iso(t);const d=new Date(t);d.setDate(d.getDate()+30);st.dateTo=iso(d);}
+      else if(p==='90'){st.dateFrom=iso(t);const d=new Date(t);d.setDate(d.getDate()+90);st.dateTo=iso(d);}
+      setChip(p==='all'?null:p);syncInputs();apply();updateFilterCount();
+    });
+  });
+})();
 
 const TL={'universidad':'Universidades','colegio':'Colegios profesionales','organismo_publico':'Organismos públicos y judiciales','instituto':'Institutos de formación','asociacion':'Asociaciones','fundacion':'Fundaciones','otro':'Otras'};
 const TO=['universidad','colegio','organismo_publico','instituto','asociacion','fundacion','otro'];
