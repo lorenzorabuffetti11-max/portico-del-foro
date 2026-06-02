@@ -608,14 +608,27 @@ function urlSourceLabel(url){
   return 'Más info';
 }
 
-function toggleDesc(ev,btn){
-  ev.preventDefault();
-  ev.stopPropagation();
-  const d=btn.previousElementSibling;
+function _toggleDescEl(tog){
+  const d=tog.previousElementSibling;
   if(!d)return;
   const expanded=d.classList.toggle('expanded');
-  btn.textContent=expanded?'Ver menos':'Ver más';
+  tog.textContent=expanded?'Ver menos':'Ver más';
 }
+document.addEventListener('click',function(e){
+  const tog=e.target.closest&&e.target.closest('.ev-desc-toggle');
+  if(!tog)return;
+  e.preventDefault();
+  e.stopPropagation();
+  _toggleDescEl(tog);
+},true);
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const tog=e.target.closest&&e.target.closest('.ev-desc-toggle');
+  if(!tog)return;
+  e.preventDefault();
+  e.stopPropagation();
+  _toggleDescEl(tog);
+},true);
 function revealDescToggles(container){
   container.querySelectorAll('.ev-desc-card').forEach(d=>{
     if(d.classList.contains('expanded'))return;
@@ -629,7 +642,7 @@ function revealDescToggles(container){
 function evCard(e){
   const dt=fd(e.start_date);
   const loc=e.modality==='virtual'?null:(e.location_address?`${e.location_address}${e.city?', '+e.city:''}`:e.city);
-  const desc=e.description?`<div class="ev-desc-card">${escapeHtml(e.description)}</div><span class="ev-desc-toggle" role="button" tabindex="0" onclick="toggleDesc(event,this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDesc(event,this);}">Ver más</span>`:'';
+  const desc=e.description?`<div class="ev-desc-card">${escapeHtml(e.description)}</div><span class="ev-desc-toggle" role="button" tabindex="0">Ver más</span>`:'';
   const hasUrl=!!e.external_url;
   const tag=hasUrl?'a':'div';
   const attrs=hasUrl?`href="${e.external_url}" target="_blank" rel="noopener"`:'';
