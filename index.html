@@ -115,6 +115,10 @@ nav a.active{border-bottom:2px solid var(--c-coral);padding-bottom:4px}
 .ev-card h3{font-family:var(--f-display);font-size:20px;font-weight:500;line-height:1.25;color:var(--c-navy);margin-bottom:10px;letter-spacing:-0.01em}
 .ev-inst{font-size:13px;color:var(--c-text-2);margin-bottom:12px;font-weight:500}
 .ev-desc-card{font-size:13px;color:var(--c-text-2);line-height:1.55;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ev-desc-card.expanded{-webkit-line-clamp:unset;display:block;overflow:visible}
+.ev-desc-toggle{display:none;background:none;border:none;padding:0;margin:-8px 0 16px;font-family:var(--f-body);font-size:12px;font-weight:600;color:var(--c-coral);cursor:pointer;letter-spacing:0.01em;align-self:flex-start}
+.ev-desc-toggle.show{display:inline-block}
+.ev-desc-toggle:hover{text-decoration:underline}
 .ev-det{display:flex;flex-direction:column;gap:6px;margin-top:auto;padding-top:16px;border-top:1px solid var(--c-border);font-size:13px;color:var(--c-text-2)}
 .ev-d{display:flex;align-items:center;gap:8px}
 .ev-d svg{width:14px;height:14px;flex-shrink:0;color:var(--c-text-3)}
@@ -604,10 +608,28 @@ function urlSourceLabel(url){
   return 'Más info';
 }
 
+function toggleDesc(ev,btn){
+  ev.preventDefault();
+  ev.stopPropagation();
+  const d=btn.previousElementSibling;
+  if(!d)return;
+  const expanded=d.classList.toggle('expanded');
+  btn.textContent=expanded?'Ver menos':'Ver más';
+}
+function revealDescToggles(container){
+  container.querySelectorAll('.ev-desc-card').forEach(d=>{
+    if(d.classList.contains('expanded'))return;
+    const btn=d.nextElementSibling;
+    if(!btn||!btn.classList.contains('ev-desc-toggle'))return;
+    if(d.scrollHeight>d.clientHeight+2)btn.classList.add('show');
+    else btn.classList.remove('show');
+  });
+}
+
 function evCard(e){
   const dt=fd(e.start_date);
   const loc=e.modality==='virtual'?null:(e.location_address?`${e.location_address}${e.city?', '+e.city:''}`:e.city);
-  const desc=e.description?`<div class="ev-desc-card">${escapeHtml(e.description)}</div>`:'';
+  const desc=e.description?`<div class="ev-desc-card">${escapeHtml(e.description)}</div><span class="ev-desc-toggle" role="button" tabindex="0" onclick="toggleDesc(event,this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDesc(event,this);}">Ver más</span>`:'';
   const hasUrl=!!e.external_url;
   const tag=hasUrl?'a':'div';
   const attrs=hasUrl?`href="${e.external_url}" target="_blank" rel="noopener"`:'';
@@ -621,6 +643,8 @@ function rEv(events){
   const c=document.getElementById('ev-cont');
   if(events.length===0){c.innerHTML=`<div class="empty"><h3>No hay eventos que coincidan</h3><p>Probá ajustando los filtros o limpiarlos.</p></div>`;return;}
   c.innerHTML=`<div class="events-grid">${events.map(evCard).join('')}<div class="propose-banner"><div><h4>¿Conocés un evento que falta?</h4><p>Sumalo a Pórtico del Foro en menos de un minuto.</p></div><button class="cta" onclick="window.location.hash='proponer'">Proponer evento</button></div></div>`;
+  revealDescToggles(c);
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(()=>revealDescToggles(c));}
 }
 
 function updateAreaBanner(){
