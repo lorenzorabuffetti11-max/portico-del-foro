@@ -678,18 +678,18 @@ function updateFilterCount(){
 
 function rFil(){
   const ts={};st.ev.forEach(e=>{if(!e.event_type_slug)return;ts[e.event_type_slug]=ts[e.event_type_slug]||{n:e.event_type_name,c:0};ts[e.event_type_slug].c++;});
-  document.getElementById('f-types').innerHTML=Object.entries(ts).sort((a,b)=>b[1].c-a[1].c).map(([s,d])=>`<label class="f-opt"><input type="checkbox" data-f="types" value="${s}"> <span class="label-text">${escapeHtml(d.n)}</span> <span class="count">${d.c}</span></label>`).join('');
+  document.getElementById('f-types').innerHTML=Object.entries(ts).sort((a,b)=>a[1].n.localeCompare(b[1].n)).map(([s,d])=>`<label class="f-opt"><input type="checkbox" data-f="types" value="${s}"> <span class="label-text">${escapeHtml(d.n)}</span> <span class="count">${d.c}</span></label>`).join('');
   
   const is={};st.ev.forEach(e=>{if(!e.institution_slug)return;is[e.institution_slug]=is[e.institution_slug]||{n:e.institution_name,c:0};is[e.institution_slug].c++;});
-  const instEntries=Object.entries(is).sort((a,b)=>b[1].c-a[1].c||a[1].n.localeCompare(b[1].n));
+  const instEntries=Object.entries(is).sort((a,b)=>a[1].n.localeCompare(b[1].n));
   const instSearchInput=instEntries.length>10?`<input type="search" id="f-inst-search" class="f-search" placeholder="Buscar institución…" aria-label="Buscar institución">`:'';
   document.getElementById('f-institutions').innerHTML=instSearchInput+instEntries.map(([s,d])=>`<label class="f-opt f-opt-inst"><input type="checkbox" data-f="institutions" value="${s}"> <span class="label-text">${escapeHtml(d.n)}</span> <span class="count">${d.c}</span></label>`).join('');
   
   const ps={};st.ev.forEach(e=>{if(!e.province_slug)return;ps[e.province_slug]=ps[e.province_slug]||{n:e.province_name,c:0};ps[e.province_slug].c++;});
-  document.getElementById('f-prov').innerHTML=Object.entries(ps).sort((a,b)=>b[1].c-a[1].c).map(([s,d])=>`<label class="f-opt"><input type="checkbox" data-f="provinces" value="${s}"> <span class="label-text">${escapeHtml(d.n)}</span> <span class="count">${d.c}</span></label>`).join('');
+  document.getElementById('f-prov').innerHTML=Object.entries(ps).sort((a,b)=>a[1].n.localeCompare(b[1].n)).map(([s,d])=>`<label class="f-opt"><input type="checkbox" data-f="provinces" value="${s}"> <span class="label-text">${escapeHtml(d.n)}</span> <span class="count">${d.c}</span></label>`).join('');
   
   const as={};st.ev.forEach(e=>{if(!e.areas)return;e.areas.forEach(a=>{as[a.slug]=as[a.slug]||{n:a.name,c:0};as[a.slug].c++;});});
-  document.getElementById('f-areas').innerHTML=Object.entries(as).sort((a,b)=>b[1].c-a[1].c).map(([s,d])=>`<label class="f-opt"><input type="checkbox" data-f="areas" value="${s}"> <span class="label-text">${escapeHtml(d.n)}</span> <span class="count">${d.c}</span></label>`).join('');
+  document.getElementById('f-areas').innerHTML=Object.entries(as).sort((a,b)=>a[1].n.localeCompare(b[1].n)).map(([s,d])=>`<label class="f-opt"><input type="checkbox" data-f="areas" value="${s}"> <span class="label-text">${escapeHtml(d.n)}</span> <span class="count">${d.c}</span></label>`).join('');
   
   // I7: ocultar Becado si no hay ningún evento con ese costo
   const hasBecados=st.ev.some(e=>e.cost_type==='becado');
